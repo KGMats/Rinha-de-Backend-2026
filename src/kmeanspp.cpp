@@ -6,8 +6,6 @@
 #include <cstdint>
 #include <cstdlib>
 
-
-
 Cluster *kmeans(k, vectors, centroids)
 {
     bool converged = false;
@@ -93,6 +91,5 @@ Cluster *kmeanspp(size_t k, Vector *vectors)
 
     free(centroids);
 }
-
 
 #endif /* KMEANSPP_H */

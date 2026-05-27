@@ -3,8 +3,6 @@
 
 #include <cstdint>
 
-
-
 /*! \class KMKNN
  *  \brief TODO: Write description
  *
