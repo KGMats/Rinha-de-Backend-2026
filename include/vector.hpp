@@ -1,10 +1,10 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <nlohmann/json.hpp>
 #include <cstdint>
 #include <string>
-#include <map>
+#include <vector>
+#include <unordered_map>
 
 #define VECTOR_DIMENSIONS 14
 
@@ -12,25 +12,35 @@
 #define SQRT_NVECTORS 1733
 
 using namespace std;
-using json = nlohmann::json;
+
+struct VectorContent
+{
+	uint16_t amount;
+	uint8_t installments;
+	uint16_t amount_vs_avg;
+	uint8_t hour_of_day;
+	uint8_t day_of_week;
+	uint16_t km_from_last_tx;
+	uint16_t km_from_home;
+	uint16_t minutes_since_last_tx;
+	uint8_t tx_count_24h;
+	bool is_online;
+	bool card_present;
+	bool unknown_merchant;
+	bool last_transaction;
+	uint16_t mcc_risk;
+	uint16_t merchant_avg_amount;
+};
 
 struct Vector
 {
-    float components[VECTOR_DIMENSIONS];
+    VectorContent components;
     char  label;   // f=fraud,v=valid,n=none(requests???)
 };
 
-const unordered_map<string, float> mcc_risk = {
-    {"5411", 0.15},
-    {"5812", 0.30},
-    {"5912", 0.20},
-    {"5944", 0.45},
-    {"7801", 0.80},
-    {"7802", 0.75},
-    {"7995", 0.85},
-    {"4511", 0.35},
-    {"5311", 0.25},
-    {"5999", 0.50}
+struct Content
+{
+	string contents[VECTOR_DIMENSIONS + 1] = { "amount", "installments", "amount_vs_avg", "hour_of_day", "day_of_week", "km_from_last_tx", "km_from_home", "minutes_since_last_tx", "tx_count_24h", "is_online", "card_present", "unknown_merchant", "last_transaction", "mcc_risk", "merchant_avg_amount" };
 };
 
 const unordered_map<string, int> normalization_dict = {
@@ -43,10 +53,31 @@ const unordered_map<string, int> normalization_dict = {
     {"max_merchant_avg_amount", 10000}
 };
 
+bool is_num(uint16_t n);
+bool is_char(char c);
+
+void next_val(const char* &p);
+
+uint16_t get_uint16(const char* &p);
+uint8_t get_uint8(const char* &p);
+uint16_t get_float(const char* &p);
+
+uint8_t parse_datetime_element(const char* &p, char* req_at, int&i);
+void parse_iso(const char* &p, char* req_at, int& i, uint8_t& hour, uint8_t& minute, uint8_t& second);
+
+uint8_t get_day_of_week(char* req_at);
+double get_diff(char* req_at, char* last_req);
+void get_mcc(const char* &p, char* aux, int& i);
+bool get_bool(const char* &p);
+uint16_t get_km(const char* &p);
+
+unordered_map<string,bool> known_merchants(const char* &p);
+
 uint16_t simple_distance(Vector v1, Vector v2);
 uint16_t euclidian_distance(Vector v1, Vector v2);
 
-Vector request_treatment(const json& request);
 Vector normalize_vector(Vector& v);
+Vector parse_request(const char* &p);
+vector<Vector> payload_parser(const char* json_dict);
 
 #endif /* VECTOR_H */
