@@ -89,7 +89,7 @@ Cluster *kmeanspp(size_t k, Vector *vectors)
     free(distanceSquared);
     // KMEANS AQUI
 
-    Clusters *clusters = kmeans(k, vectors, centroids);
+    Cluster *clusters = kmeans(k, vectors, centroids);
 
     free(centroids);
 }
