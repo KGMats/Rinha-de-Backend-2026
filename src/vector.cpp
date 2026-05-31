@@ -139,13 +139,13 @@ const uint16_t mcc_risk(uint16_t mcc_code){
 
 Vector normalize_vector(Vector& v)
 {	
-	int max_amount = normalization_dict.at("max_amount");
-	int max_installments = normalization_dict.at("max_installments");
-	int amount_vs_avg_ratio = normalization_dict.at("amount_vs_avg_ratio");
-	int max_minutes = normalization_dict.at("max_minutes");
-	int max_km = normalization_dict.at("max_km");
-	int max_tx_count_24h = normalization_dict.at("max_tx_count_24h");
-	int max_merchant_avg_amount = normalization_dict.at("max_merchant_avg_amount");
+	static const int max_amount = normalization_dict.at("max_amount");
+	static const int max_installments = normalization_dict.at("max_installments");
+	static const int amount_vs_avg_ratio = normalization_dict.at("amount_vs_avg_ratio");
+	static const int max_minutes = normalization_dict.at("max_minutes");
+	static const int max_km = normalization_dict.at("max_km");
+	static const int max_tx_count_24h = normalization_dict.at("max_tx_count_24h");
+	static const int max_merchant_avg_amount = normalization_dict.at("max_merchant_avg_amount");
 
 	if((v.components.amount) >= max_amount*100)v.components.amount = 1.0;
 	else if(v.components.amount <= 0)v.components.amount = 0.0;
