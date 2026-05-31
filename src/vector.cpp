@@ -1,4 +1,4 @@
-#include "../include/vector.hpp"
+#include "vector.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -479,6 +479,83 @@ vector<Vector> payload_parser(const char* json_dict){
 }
 
 /*
+ *@brief switch to classify the vector field the numeric index refers to
+ */
+void populate_v_index(Vector& v, uint16_t value, int index){
+	switch (index){
+		case 0: v.components.amount = value;
+		case 1: v.components.installments = value;
+		case 2: v.components.amount_vs_avg = value;
+		case 3: v.components.hour_of_day = value;
+		case 4: v.components.day_of_week = value;
+		case 5: v.components.km_from_last_tx = value;
+		case 6: v.components.km_from_home = value;
+		case 7: v.components.minutes_since_last_tx = value;
+		case 8: v.components.tx_count_24h = value;
+		case 9: v.components.is_online = value;
+		case 10: v.components.card_present = value;
+		case 11: v.components.unknown_merchant = value;
+		case 12: v.components.mcc_risk = value;
+		case 13: v.components.merchant_avg_amount = value; 
+		case 14: v.components.last_transaction = value;
+	}
+}
+
+/*
  * @brief parse a already normalized vector and get its values for test
  */
+vector<Vector> references_parser(const char* json_dict){
 
+	vector<Vector> data;
+	const char* p = json_dict;
+
+	if(*p != '[')return data;		
+
+	char next_char = ',';
+
+	while(next_char == ','){
+		Vector v;
+		
+		next_val(p);
+		if(*p != '[') return data;
+
+		int index = 0; bool last_transaction = true;
+		while(index != 14){
+			while(*p != ']'){ 
+				if(*p == '-')break;
+				if(is_num(*p))break; 
+				++p;
+		       	}
+			if(index == 5 || index == 6){
+				if(*p == '-') last_transaction = false;
+				++p;
+			}
+			if(index == 1 || index == 3 || index == 4 || index == 8){
+				uint16_t aux = get_float(p);
+				uint16_t tmp = aux; int size = 0;
+				while(tmp > 0){ tmp /= 10; size += 1; }	
+				if(size > 2){
+					uint8_t value = 0;
+					string digits = to_string(aux);
+					for(int d=0; d<2; d++){ value = value*10 + (uint8_t)(digits[d] - '0'); }
+					populate_v_index(v,value,index);
+				}
+				else populate_v_index(v,aux,index);
+			}
+			else populate_v_index(v,get_float(p),index);
+			index += 1;
+		}populate_v_index(v,last_transaction,index);
+
+		next_val(p);
+		++p;
+
+		v.label = *p;
+
+		while(*p != '}')++p;
+		++p;
+
+		data.push_back(v);
+		next_char = *p;
+	}
+	return data;
+}

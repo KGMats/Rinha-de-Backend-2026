@@ -27,15 +27,15 @@ struct VectorContent
 	bool is_online;
 	bool card_present;
 	bool unknown_merchant;
-	bool last_transaction;
 	uint16_t mcc_risk;
 	uint16_t merchant_avg_amount;
+	bool last_transaction;
 };
 
 struct Vector
 {
     VectorContent components;
-    char  label;   // f=fraud,v=valid,n=none(requests???)
+    char  label;   // f = fraud, l = legit, n = none
 };
 
 struct Content
@@ -79,5 +79,6 @@ uint16_t euclidian_distance(Vector v1, Vector v2);
 Vector normalize_vector(Vector& v);
 Vector parse_request(const char* &p);
 vector<Vector> payload_parser(const char* json_dict);
+vector<Vector> references_parser(const char* json_dict);
 
 #endif /* VECTOR_H */
