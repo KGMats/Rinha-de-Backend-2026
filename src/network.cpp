@@ -1,4 +1,5 @@
 #include "network.hpp"
+#include "vector.hpp"
 
 #include <string.h>
 #include <sys/socket.h>
@@ -74,15 +75,14 @@ void serve()
         socklen_t client_size = sizeof(client_addr);
 
         int client_fd = accept(
-            server_fd,
-            (struct sockaddr*)&client_addr,
-            &client_size
-        );
+                server_fd,
+                (struct sockaddr*)&client_addr,
+                &client_size
+                );
 
         if (client_fd < 0)
             continue;
 
-        puts("cliente conectado");
 
         // ========== process request ========== //
         size_t msg_size = read(client_fd, buffer, 512);
@@ -96,17 +96,24 @@ void serve()
         // or /ready endpoint
 
 
-        // ENDPOINT /fraud-score
-        if (buffer[0] == 'P')
+        // ENDPOINT /ready
+        if (buffer[0] == 'G')
         {
-            write(client_fd, responses[1], response_sizes[1]);
+            // TODO: Return 200 only after processing KMNN
+            
+
+            write(client_fd, responses[6], response_sizes[6]);
             close(client_fd);
             continue;
         }
 
-        // ENDPOINT /ready
-        // TODO: Return 200 only after processing KMNN
-        write(client_fd, responses[6], response_sizes[6]);
+        const char *ptr = buffer;
+        Vector data = parse_request(ptr);
+        // ENDPOINT /fraud-score
+        write(client_fd, responses[1], response_sizes[1]);
         close(client_fd);
+
+
+        continue;
     }
 }

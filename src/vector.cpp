@@ -45,10 +45,7 @@ const uint16_t mcc_risk(uint16_t mcc_code){
 		case 5311 :return 2500;
 		case 5999 :return 5000; //comment?
 		default: return 5000;	
-	}
-}
-
-/*
+	} } /*
  * @brief Filters the raw data from a single request json dict input
  * and returns a treated non normalized vector
  */
@@ -139,13 +136,13 @@ const uint16_t mcc_risk(uint16_t mcc_code){
 
 Vector normalize_vector(Vector& v)
 {	
-	int max_amount = normalization_dict.at("max_amount");
-	int max_installments = normalization_dict.at("max_installments");
-	int amount_vs_avg_ratio = normalization_dict.at("amount_vs_avg_ratio");
-	int max_minutes = normalization_dict.at("max_minutes");
-	int max_km = normalization_dict.at("max_km");
-	int max_tx_count_24h = normalization_dict.at("max_tx_count_24h");
-	int max_merchant_avg_amount = normalization_dict.at("max_merchant_avg_amount");
+	static const int max_amount = normalization_dict.at("max_amount");
+	static const int max_installments = normalization_dict.at("max_installments");
+	static const int amount_vs_avg_ratio = normalization_dict.at("amount_vs_avg_ratio");
+	static const int max_minutes = normalization_dict.at("max_minutes");
+	static const int max_km = normalization_dict.at("max_km");
+	static const int max_tx_count_24h = normalization_dict.at("max_tx_count_24h");
+	static const int max_merchant_avg_amount = normalization_dict.at("max_merchant_avg_amount");
 
 	if((v.components.amount) >= max_amount*100)v.components.amount = 1.0;
 	else if(v.components.amount <= 0)v.components.amount = 0.0;
@@ -202,8 +199,26 @@ bool is_char(char c){ return (c >= 'A' && c <= 'Z'); }
  * @brief iterates to the next position of a value of request
  */
 void next_val(const char* &p){
-	while(*p != ':')++p;
-	++p;++p;
+    while(*p && *p != ':'){
+        if(*p == '"'){ ++p; while(*p && *p != '"'){ if(*p=='\\')++p; ++p; } ++p; }
+        else ++p;
+    }
+    if(*p) ++p;
+    while(*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t')++p;
+}
+
+void skip_to_brace(const char* &p){
+    while(*p){
+        if(*p == '"'){
+            ++p;
+            while(*p && *p != '"'){
+                if(*p == '\\')++p;
+                ++p;
+            }
+        }
+        if(*p == '{'){return;}
+        ++p;
+    }
 }
 
 /*
@@ -256,12 +271,21 @@ uint8_t parse_datetime_element(const char* &p, char* req_at, int&i){
 /*
  * @brief parses and divides the iso string into varibles 
  */
+
 void parse_iso(const char* &p, char* req_at, int& i, uint8_t& hour, uint8_t& minute, uint8_t& second){
-	while(*p != 'T') { req_at[i] = *p; i+=1; ++p; }
+	while(*p && *p != 'T' && i < 20) { req_at[i] = *p; i+=1; ++p; }
+	
+	if (!*p || *p != 'T') {
+		req_at[i] = '\0';
+		return;
+	}
+	
 	req_at[i] = *p; i+=1; ++p;
 	hour = parse_datetime_element(p,req_at,i);
 	minute = parse_datetime_element(p,req_at,i);
 	second = parse_datetime_element(p,req_at,i);
+	
+	req_at[i] = '\0'; // REQUIRED for strptime to work correctly later
 }
 
 /*
@@ -351,10 +375,10 @@ uint16_t get_km(const char* &p){
 Vector parse_request(const char* &p){
 	Vector v;
 
-	while(*p != '{')++p;
+    skip_to_brace(p);
 	++p;
 
-	while(*p != '{')++p;	
+    skip_to_brace(p);
 	++p;
 
 	next_val(p);
@@ -375,7 +399,8 @@ Vector parse_request(const char* &p){
 
 	v.components.day_of_week = get_day_of_week(req_at); 
 
-	while(*p != '{')++p;
+    skip_to_brace(p);
+	++p;
 	next_val(p);
 
 	uint16_t avg_amount = get_float(p);
@@ -389,25 +414,31 @@ Vector parse_request(const char* &p){
 
 	unordered_map<string,bool> km = known_merchants(p);
 
-	while(*p != '{')++p;
+    skip_to_brace(p);
+	++p;
 	next_val(p);
 
 	char id[9];int j=0;
 	++p; get_mcc(p,id,j);
+    ++p;
 
 	if(km.count(string(id))) v.components.unknown_merchant = false;
 	else v.components.unknown_merchant = true;
 
 	next_val(p);
+    ++p;
 
 	uint16_t mcc_risk_input = get_uint16(p);
+    ++p;
+
 	v.components.mcc_risk = mcc_risk(mcc_risk_input);
 
 	next_val(p);
 
 	v.components.merchant_avg_amount = get_float(p);
 
-	while(*p != '{')++p;
+    skip_to_brace(p);
+	++p;
 
 	next_val(p);
 
@@ -423,39 +454,27 @@ Vector parse_request(const char* &p){
 
 	v.components.km_from_home = get_km(p);
 
-	while(*p != ':')++p;
-	++p;++p;
+    next_val(p);
 
 	if(*p == 'n'){
 		v.components.last_transaction = false;
 		v.components.minutes_since_last_tx = v.components.km_from_last_tx = -1;
-
-		while(*p != '}')++p;
-		++p;
-		// espero ',' ou ']'
-	}
-	else {
+	} else {
 		v.components.last_transaction = true;
-		while(*p != '{')++p;
+		skip_to_brace(p);
 
 		next_val(p);
-		++p;
+		if (*p) ++p; // Prevent stepping out of bounds if next_val hits \0
 		
 		char last_req[21]; int h =0;
 		uint8_t hourlt,minutelt,secondlt;
 		parse_iso(p,last_req,h,hourlt,minutelt,secondlt);
 
-		v.components.minutes_since_last_tx = get_diff(req_at,last_req);
-
 		next_val(p);	
-
 		v.components.km_from_last_tx = get_km(p);
 
-		while(*p != '}')++p;
-		++p;
-
-		while(*p != '}')++p;
-		++p;
+		while(*p && *p != '}') ++p; if(*p) ++p;
+		while(*p && *p != '}') ++p; if(*p) ++p;
 	}
 	v.label = 'n';
 	return v;
@@ -477,6 +496,7 @@ vector<Vector> payload_parser(const char* json_dict){
 	}
 	return data;
 }
+<<<<<<< HEAD
 
 /*
  *@brief switch to classify the vector field the numeric index refers to
@@ -559,3 +579,5 @@ vector<Vector> references_parser(const char* json_dict){
 	}
 	return data;
 }
+=======
+>>>>>>> f631b24 (make json parsing more realiable)
