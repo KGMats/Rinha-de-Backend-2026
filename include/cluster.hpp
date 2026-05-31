@@ -5,8 +5,6 @@
 #include <cstddef>
 #include <cmath>
 
-
-
 class Cluster
 {
 private:
@@ -14,8 +12,6 @@ private:
     size_t cap;
     size_t radius;
     uint32_t vectorsIndexes[size];
-
-
 
 public:
     Vector centroid;
