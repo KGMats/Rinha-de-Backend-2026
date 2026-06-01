@@ -1,4 +1,4 @@
-#include "vector.hpp"
+#include "../include/vector.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,131 +9,113 @@
 
 using namespace std;
 
-//uint16_t simple_distance(Vector v1, Vector v2)
-//{
-//    uint16_t distance = 0;
-//    for (int i = 0; i < VECTOR_DIMENSIONS; i++)
-//    {
-//        distance += std::abs(v1.components[i] - v2.components[i]);
-//    }
-//    return distance;
-//}
-//
-//uint16_t euclidian_distance(Vector v1, Vector v2)
-//{
-//    uint16_t distance = 0;
-//    for (int i = 0; i < VECTOR_DIMENSIONS; i++)
-//    {
-//        distance += pow(v1.components[i] - v2.components[i], 2);
-//    }
-//    return distance;
-//}
+/*
+ *@brief return the vector field associated to its numeric index 
+ */
+uint16_t get_components(Vector& v, int index){
+	switch (index){
+		case 0: return v.components.amount;
+		case 1: return v.components.installments;
+		case 2: return v.components.amount_vs_avg;
+		case 3: return v.components.hour_of_day;
+		case 4: return v.components.day_of_week;
+		case 5: return v.components.minutes_since_last_tx;
+		case 6: return v.components.km_from_last_tx;
+		case 7: return v.components.km_from_home;
+		case 8: return v.components.tx_count_24h;
+		case 9: return v.components.is_online;
+		case 10: return v.components.card_present;
+		case 11: return v.components.unknown_merchant;
+		case 12: return v.components.mcc_risk;
+		case 13: return v.components.merchant_avg_amount;
+		default: return v.components.last_transaction;
+	}
+}
+
+/*
+ * @brief return the float like values of the vector field associated to its numeric index 
+ */
+float get_real_components(Vector& v, int index){
+	switch (index){
+		case 0: { 
+			if(v.components.amount < 10)return ((float)v.components.amount/100.0f);
+			else if(v.components.amount < 100)return ((float)v.components.amount/1000.0f);
+			else if(v.components.amount < 1000)return ((float)v.components.amount/10000.0f);
+			else return ((float)v.components.amount/100000.0f);
+		}
+		case 1: return ((float)v.components.installments/100.0f);
+		case 2: return ((float)v.components.amount_vs_avg/100.0f);
+		case 3: return ((float)v.components.hour_of_day/100.0f);
+		case 4: return ((float)v.components.day_of_week/100.0f);
+		case 5: {
+				if(v.components.minutes_since_last_tx==1)return (float)-1;
+				else return ((float)v.components.minutes_since_last_tx/10000.0f); 
+		}
+		case 6: {
+				if(v.components.km_from_last_tx==1)return (float)-1;
+				return ((float)v.components.km_from_last_tx/10000.0f);
+		}
+		case 7:	return ((float)v.components.km_from_home/10000.0f);
+		case 8: return ((float)v.components.tx_count_24h/100.0f);
+		case 9: return (float)v.components.is_online;
+		case 10: return (float)v.components.card_present;
+		case 11: return (float)v.components.unknown_merchant;
+		case 12: {
+				if(v.components.mcc_risk < 10)return ((float)v.components.mcc_risk/10.0f);
+				else return ((float)v.components.mcc_risk/100.0f);
+		}
+		case 13: return ((float)v.components.merchant_avg_amount/10000.0f);
+		default: return (float)v.components.last_transaction;
+	}
+}
+/*
+ * @brief calculates the Manhattam Distance between two Vectors
+ */
+float simple_distance(Vector v1, Vector v2)
+{
+    float distance = 0;
+    for (int i = 0; i < VECTOR_DIMENSIONS; i++)
+    {
+        distance += abs(get_real_components(v1,i) - get_real_components(v2,i));
+    }
+    return distance;
+}
+
+/*
+ * @brief calculates the euclician distance between two Vectors
+ */
+float euclidian_distance(Vector v1, Vector v2)
+{
+    float distance = 0;
+    for (int i = 0; i < VECTOR_DIMENSIONS; i++)
+    {
+        distance += pow(get_real_components(v1,i) - get_real_components(v2,i), 2);
+    }
+    return distance;
+}
 
 /*
  * @brief switch with mcc cases and their return type
  */
-const uint16_t mcc_risk(uint16_t mcc_code){
+uint8_t mcc_risk(uint16_t mcc_code){
 	switch(mcc_code){
-		case 5411 :return 1500;
-		case 5812 :return 3000;
-		case 5912 :return 2000;
-		case 5944 :return 4500;
-		case 7801 :return 8000;
-		case 7802 :return 7500;
-		case 7995 :return 8500;
-		case 4511 :return 3500;
-		case 5311 :return 2500;
-		case 5999 :return 5000; //comment?
-		default: return 5000;	
-	} } /*
- * @brief Filters the raw data from a single request json dict input
- * and returns a treated non normalized vector
- */
-//Vector request_treatment(const char* request){
-//	Vector v;
-//
-//
-//	auto t = request["transaction"];
-//	auto c = request["customer"];
-//	auto m = request["merchant"];
-//	auto terminal = request["terminal"];
-//	auto l = request["last_transaction"];
-//	
-//	v.components[0] = t["amount"]; //float
-//	v.components[1] = t["installments"]; //short 
-//	v.components[2] = ((float)t["amount"]/(float)c["avg_amount"]); //float
-//
-//	short hour_of_day = 0; short aux = 10; 
-//	string t_cur_str = (string)t["requested_at"];
-//	const char* t_cur = t_cur_str.c_str();
-//	for(int i = 11; i <= 12; i++){
-//		if(t_cur[i]=='1')hour_of_day+=1*aux;
-//		else if(t_cur[i]=='2')hour_of_day+=2*aux;
-//		else if(t_cur[i]=='3')hour_of_day+=3*aux;
-//		else if(t_cur[i]=='4')hour_of_day+=4*aux;
-//		else if(t_cur[i]=='5')hour_of_day+=5*aux;
-//		else if(t_cur[i]=='6')hour_of_day+=6*aux;
-//		else if(t_cur[i]=='7')hour_of_day+=7*aux;
-//		else if(t_cur[i]=='8')hour_of_day+=8*aux;
-//		else if(t_cur[i]=='9')hour_of_day+=9*aux;
-//		aux = 1;
-//	}v.components[3] = hour_of_day; //short
-//
-//	struct tm parsed = {};
-//	strptime(t_cur,"%Y-%m-%dT%H:%M:%SZ",&parsed);
-//	time_t t1 = timegm(&parsed);
-//	struct tm* utc_time = gmtime(&t1);
-//	short day = utc_time->tm_wday; // 0 sunday 6 saturday
-//	if(day==0)day=6;
-//	else day -= 1;
-//	v.components[4] = day; // short 
-//
-//	if(l.is_null()){
-//	       	v.components[5] = - 1; //short
-//		v.components[6] = -1; //short
-//	}
-//	else{
-//		struct tm parsed1 = {};
-//		string t2_str = (string)l["timestamp"];
-//		const char* timestamp2 = t2_str.c_str();
-//		strptime(timestamp2,"%Y-%m-%dT%H:%M:%SZ",&parsed1);
-//		time_t t2 = timegm(&parsed1); // negative time check?
-//		v.components[5] = (difftime(t1,t2)/60.0); //double
-//		v.components[6] = l["km_from_current"]; //double
-//	}	
-//
-//	v.components[7] = terminal["km_from_home"]; //double
-//	v.components[8] = c["tx_count_24h"]; //short
-//	
-//	if(terminal["is_online"])v.components[9] = 1; //short
-//        else v.components[9] = 0;	//short
-//
-//	if(terminal["card_present"])v.components[10] = 1;
-//	else v.components[10] = 0;
-//
-//	bool unknown = true;
-//	for(auto& id : c["known_merchants"])
-//	{
-//		if(id==m["id"]){unknown = false; break; }
-//	}
-//	if(unknown)v.components[11] = 1; //short
-//	else v.components[11] = 0; //short
-//
-//	string identifier = (string)m["mcc"];
-//	if(mcc_risk.count(identifier))v.components[12] = mcc_risk.at(identifier);//float
-//	else v.components[12] = 0.5; //float
-//
-//	v.components[13] = m["avg_amount"]; //double
-//
-//	v.label = 'n'; // none = unknown
-//
-//	return v;
-//}
+		case 5411 :return 15;
+		case 5812 :return 3;
+		case 5912 :return 2;
+		case 5944 :return 45;
+		case 7801 :return 8;
+		case 7802 :return 75;
+		case 7995 :return 85;
+		case 4511 :return 35;
+		case 5311 :return 25;
+		case 5999 :return 5; //comment?
+		default: return 5;	
+	}
+} 
 
 /*
  * @brief receives a populated vector v and return this vector normalized
  */
-
 Vector normalize_vector(Vector& v)
 {	
 	static const int max_amount = normalization_dict.at("max_amount");
@@ -196,7 +178,7 @@ bool is_num(uint16_t n){ return (n >= '0' && n <= '9'); }
 bool is_char(char c){ return (c >= 'A' && c <= 'Z'); }
 
 /*
- * @brief iterates to the next position of a value of request
+ * @brief iterates to the next position of a value in request
  */
 void next_val(const char* &p){
     while(*p && *p != ':'){
@@ -207,6 +189,9 @@ void next_val(const char* &p){
     while(*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t')++p;
 }
 
+/*
+ * @brief skips the pointer to the position rightmost of a brace
+ */
 void skip_to_brace(const char* &p){
     while(*p){
         if(*p == '"'){
@@ -216,7 +201,7 @@ void skip_to_brace(const char* &p){
                 ++p;
             }
         }
-        if(*p == '{'){return;}
+        if(*p == '{')return;
         ++p;
     }
 }
@@ -375,15 +360,18 @@ uint16_t get_km(const char* &p){
 Vector parse_request(const char* &p){
 	Vector v;
 
-    skip_to_brace(p);
+    	skip_to_brace(p);
 	++p;
 
-    skip_to_brace(p);
+    	skip_to_brace(p);
 	++p;
 
 	next_val(p);
 
+	// error
+	
 	v.components.amount = get_float(p);
+
 	next_val(p);
 
 	v.components.installments = get_uint8(p);
@@ -398,9 +386,11 @@ Vector parse_request(const char* &p){
 	v.components.hour_of_day = hour;
 
 	v.components.day_of_week = get_day_of_week(req_at); 
-
-    skip_to_brace(p);
+	
 	++p;
+        skip_to_brace(p);
+	++p;
+
 	next_val(p);
 
 	uint16_t avg_amount = get_float(p);
@@ -414,7 +404,7 @@ Vector parse_request(const char* &p){
 
 	unordered_map<string,bool> km = known_merchants(p);
 
-    skip_to_brace(p);
+        skip_to_brace(p);
 	++p;
 	next_val(p);
 
@@ -437,7 +427,7 @@ Vector parse_request(const char* &p){
 
 	v.components.merchant_avg_amount = get_float(p);
 
-    skip_to_brace(p);
+        skip_to_brace(p);
 	++p;
 
 	next_val(p);
@@ -454,14 +444,13 @@ Vector parse_request(const char* &p){
 
 	v.components.km_from_home = get_km(p);
 
-    next_val(p);
+        next_val(p);
 
 	if(*p == 'n'){
 		v.components.last_transaction = false;
 		v.components.minutes_since_last_tx = v.components.km_from_last_tx = -1;
 	} else {
 		v.components.last_transaction = true;
-		skip_to_brace(p);
 
 		next_val(p);
 		if (*p) ++p; // Prevent stepping out of bounds if next_val hits \0
@@ -474,9 +463,10 @@ Vector parse_request(const char* &p){
 		v.components.km_from_last_tx = get_km(p);
 
 		while(*p && *p != '}') ++p; if(*p) ++p;
-		while(*p && *p != '}') ++p; if(*p) ++p;
 	}
+	while(*p && *p != '}') ++p; if(*p) ++p;
 	v.label = 'n';
+
 	return v;
 }
 
@@ -490,13 +480,12 @@ vector<Vector> payload_parser(const char* json_dict){
 
 	while(next_char == ','){
 		Vector v = parse_request(p);
-		v = normalize_vector(v);
+		//v = normalize_vector(v);
 		data.push_back(v);
 		next_char = *p;
 	}
 	return data;
 }
-<<<<<<< HEAD
 
 /*
  *@brief switch to classify the vector field the numeric index refers to
@@ -508,9 +497,9 @@ void populate_v_index(Vector& v, uint16_t value, int index){
 		case 2: v.components.amount_vs_avg = value;
 		case 3: v.components.hour_of_day = value;
 		case 4: v.components.day_of_week = value;
-		case 5: v.components.km_from_last_tx = value;
-		case 6: v.components.km_from_home = value;
-		case 7: v.components.minutes_since_last_tx = value;
+		case 5: v.components.minutes_since_last_tx = value;
+		case 6: v.components.km_from_last_tx = value;
+		case 7: v.components.km_from_home = value;
 		case 8: v.components.tx_count_24h = value;
 		case 9: v.components.is_online = value;
 		case 10: v.components.card_present = value;
@@ -579,5 +568,3 @@ vector<Vector> references_parser(const char* json_dict){
 	}
 	return data;
 }
-=======
->>>>>>> f631b24 (make json parsing more realiable)

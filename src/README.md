@@ -23,17 +23,18 @@ In this implementation, we will focus on the last presented idea.
 
 The usual KNN implementation uses the euclidian distance formula, so that, for each K, requires D subtractions, D multiplications and one square root. That being said, in a space T with N instances with D dimensions, the distance calculation between a new instance X and all the other instances of T require  a complexity of O(DN).
 
+## k-Means algorithm:
+
+Groups $M$ fields by, randomly defining $k$ points in $T$, called centroids, while the $k$ points dont have a shared space, for each vector in $T$, it calculates the distance (Manhattam or Euclidian) to the nearest centroid (need to store the locality in space of each centroid) and define the vector as belonging to that group. For each $M$, calculates the arithmetic average of the data and define the result as the new centroid of that field (updates the centroid value).
+	- In each loop iteration (N times), its needed to calculate the distance of that point $n$ to each and every of the centroids (initially $k-centroids => O(NK)$);
+	- It is needed to store the $M$ centroids position vector in disk, such that it will be used on the next phase as well (stored in order => sort this group), with its respectifully number of elements.
+
 ## The kMkNN algorithm:
 
-This implementation's idea is to pre-process T in order to optimze the searching phase, It is divided into two phases: $offline$ and $online$, respectifully.
+This implementation's idea is to pre-process $T$ in order to optimze the searching phase, It is divided into two: phase one, or `offline` and phase two, or `online`, respectifully.
 
-- In phase one, the k-Means algorithm divides T into M = $sqrt(N)$ groups.
-
-ps: k-Means algorithm groups the M fields by, randomly defining k points in T, called centroids, while the k points dont have a shared space, for each vector in T, it calculates the distance (Manhattam or Euclidian) to the nearest centroid (need to store the locality in space of each centroid) and define the vector as belonging to that group. For each M, calculates the arithmetic average of the data and define the result as the new centroid of that field (updates the centroid value).
-	- In each loop itearion (N times), its needed to calculate the distance of that point $n$ to each and every of the centroids (initial k-centroids => O(NK)) that if the centroids doesent change position (impossible), maybe look for a better way of implementing ($3000000*sqrt(3000000)$).
-	- It is needed to store the M centroids position vector in disk, such that it will be used on the next phase as well (stored in order => sort this group), with its respectifully number of elements.
-
-- In phase two, its used the concept of triangular inequality for minimizing the euclidian distance calculations.
+- `offline`: The k-Means algorithm divides $T$ into $M$ = $sqrt(N)$ groups;
+- `online`: Uses the concept of triangular inequality for minimizing the number of euclidian distance calculations.
 
 	if ($(d(x,cj) - rj) < dk)$ // if false, no need to caulcate the distances between X and all the instances of the group Cj
 		for i in Nj

@@ -11,15 +11,15 @@ Cluster *kmeans(k, vectors, centroids)
     bool converged = false;
     while (!converged)
     {
-        for (int i = 0; i < NVECTORS; i++)
+        for (int i = 0; i < NVECTORS; i++) // iterates through 3M Vec
         {
-            Cluster clusters[SQRT_NVECTORS];
+            Cluster clusters[SQRT_NVECTORS]; 
             Vector *vector = &vectors[i];
             size_t closest_index = 0;
-            int16_t min_distance = euclidian_distance(*vector, centroids[0]);
+            uint16_t min_distance = euclidian_distance(*vector, centroids[0]);
             for (int j = 1; j < k; j++)
             {
-                int16_t distance = euclidian_distance(*vector, *centroids[j]);
+                uint16_t distance = euclidian_distance(*vector, *centroids[j]);
                 if (distance < min_distance)
                 {
                     min_distance = distance;
@@ -83,10 +83,9 @@ Cluster *kmeanspp(size_t k, Vector *vectors)
         }
     }
 
-
     free(distanceSquared);
-    // KMEANS AQUI
 
+    // KMEANS AQUI
     Cluster *clusters = kmeans(k, vectors, centroids);
 
     free(centroids);

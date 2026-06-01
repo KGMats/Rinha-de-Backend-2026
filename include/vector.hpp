@@ -20,15 +20,16 @@ struct VectorContent
 	uint16_t amount_vs_avg;
 	uint8_t hour_of_day;
 	uint8_t day_of_week;
+	uint16_t minutes_since_last_tx;
 	uint16_t km_from_last_tx;
 	uint16_t km_from_home;
-	uint16_t minutes_since_last_tx;
 	uint8_t tx_count_24h;
 	bool is_online;
 	bool card_present;
 	bool unknown_merchant;
-	uint16_t mcc_risk;
+	uint8_t mcc_risk;
 	uint16_t merchant_avg_amount;
+	//extra
 	bool last_transaction;
 };
 
@@ -53,6 +54,12 @@ const unordered_map<string, int> normalization_dict = {
     {"max_merchant_avg_amount", 10000}
 };
 
+uint16_t get_components(Vector& v, int index);
+float get_real_components(Vector& v, int index);
+
+float simple_distance(Vector v1, Vector v2);
+float euclidian_distance(Vector v1, Vector v2);
+
 bool is_num(uint16_t n);
 bool is_char(char c);
 
@@ -72,9 +79,7 @@ bool get_bool(const char* &p);
 uint16_t get_km(const char* &p);
 
 unordered_map<string,bool> known_merchants(const char* &p);
-
-uint16_t simple_distance(Vector v1, Vector v2);
-uint16_t euclidian_distance(Vector v1, Vector v2);
+uint8_t mcc_risk(uint16_t mcc_code);
 
 Vector normalize_vector(Vector& v);
 Vector parse_request(const char* &p);
