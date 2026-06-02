@@ -55,7 +55,6 @@ const unordered_map<string, int> normalization_dict = {
 };
 
 uint16_t get_components(Vector& v, int index);
-float get_real_components(Vector& v, int index);
 
 float simple_distance(Vector v1, Vector v2);
 float euclidian_distance(Vector v1, Vector v2);
@@ -69,11 +68,11 @@ uint16_t get_uint16(const char* &p);
 uint8_t get_uint8(const char* &p);
 uint16_t get_float(const char* &p);
 
-uint8_t parse_datetime_element(const char* &p, char* req_at, int&i);
-void parse_iso(const char* &p, char* req_at, int& i, uint8_t& hour, uint8_t& minute, uint8_t& second);
+uint16_t parse_datetime_element(const char* &p, char* req_at, int&i);
+void parse_iso(const char* &p, char* req_at, int& i, uint16_t& year, uint8_t& month, uint8_t& day, uint8_t& hour, uint8_t& minute, uint8_t& second);
+uint16_t get_diff(uint16_t y1,uint8_t mo1,uint8_t d1,uint8_t h1, uint8_t mi1,uint16_t y2,uint8_t mo2,uint8_t d2, uint8_t h2, uint8_t mi2);
+uint8_t get_day_of_week(uint16_t year, uint8_t month, uint8_t day);
 
-uint8_t get_day_of_week(char* req_at);
-double get_diff(char* req_at, char* last_req);
 void get_mcc(const char* &p, char* aux, int& i);
 bool get_bool(const char* &p);
 uint16_t get_km(const char* &p);

@@ -33,52 +33,26 @@ uint16_t get_components(Vector& v, int index){
 }
 
 /*
- * @brief return the float like values of the vector field associated to its numeric index 
- */
-float get_real_components(Vector& v, int index){
-	switch (index){
-		case 0: { 
-			if(v.components.amount < 10)return ((float)v.components.amount/100.0f);
-			else if(v.components.amount < 100)return ((float)v.components.amount/1000.0f);
-			else if(v.components.amount < 1000)return ((float)v.components.amount/10000.0f);
-			else return ((float)v.components.amount/100000.0f);
-		}
-		case 1: return ((float)v.components.installments/100.0f);
-		case 2: return ((float)v.components.amount_vs_avg/100.0f);
-		case 3: return ((float)v.components.hour_of_day/100.0f);
-		case 4: return ((float)v.components.day_of_week/100.0f);
-		case 5: {
-				if(v.components.minutes_since_last_tx==1)return (float)-1;
-				else return ((float)v.components.minutes_since_last_tx/10000.0f); 
-		}
-		case 6: {
-				if(v.components.km_from_last_tx==1)return (float)-1;
-				return ((float)v.components.km_from_last_tx/10000.0f);
-		}
-		case 7:	return ((float)v.components.km_from_home/10000.0f);
-		case 8: return ((float)v.components.tx_count_24h/100.0f);
-		case 9: return (float)v.components.is_online;
-		case 10: return (float)v.components.card_present;
-		case 11: return (float)v.components.unknown_merchant;
-		case 12: {
-				if(v.components.mcc_risk < 10)return ((float)v.components.mcc_risk/10.0f);
-				else return ((float)v.components.mcc_risk/100.0f);
-		}
-		case 13: return ((float)v.components.merchant_avg_amount/10000.0f);
-		default: return (float)v.components.last_transaction;
-	}
-}
-/*
  * @brief calculates the Manhattam Distance between two Vectors
  */
 float simple_distance(Vector v1, Vector v2)
 {
-    float distance = 0;
-    for (int i = 0; i < VECTOR_DIMENSIONS; i++)
-    {
-        distance += abs(get_real_components(v1,i) - get_real_components(v2,i));
-    }
-    return distance;
+    	float distance = 0;
+	distance += abs((float)v1.components.amount/10000.0f - (float)v2.components.amount/10000.0f);
+	distance += abs((float)v1.components.installments/100.0f - (float)v2.components.installments/100.0f);
+	distance += abs((float)v1.components.amount_vs_avg/10000.0f - (float)v2.components.amount_vs_avg/10000.0f);
+	distance += abs((float)v1.components.hour_of_day/100.0f - (float)v2.components.hour_of_day/100.0f);
+	distance += abs((float)v1.components.day_of_week/100.0f - (float)v2.components.day_of_week/100.0f);
+	distance += abs((float)v1.components.minutes_since_last_tx/10000.0f - (float)v2.components.minutes_since_last_tx/10000.0f); 
+	distance += abs((float)v1.components.km_from_last_tx/10000.0f - (float)v2.components.km_from_last_tx/10000.0f);
+	distance += abs((float)v1.components.km_from_home/10000.0f - (float)v2.components.km_from_home/10000.0f);
+	distance += abs((float)v1.components.tx_count_24h/100.0f - (float)v2.components.tx_count_24h/100.0f);
+	distance += abs((float)v1.components.is_online - (float)v2.components.is_online);
+	distance += abs((float)v1.components.card_present - (float)v2.components.card_present);
+	distance += abs((float)v1.components.unknown_merchant - (float)v2.components.unknown_merchant);
+	distance += abs((float)v1.components.merchant_avg_amount/10000.0f - (float)v2.components.merchant_avg_amount/10000.0f);
+	distance += abs((float)v1.components.mcc_risk/100.0f - v2.components.mcc_risk/100.0f);
+	return distance;
 }
 
 /*
@@ -86,12 +60,22 @@ float simple_distance(Vector v1, Vector v2)
  */
 float euclidian_distance(Vector v1, Vector v2)
 {
-    float distance = 0;
-    for (int i = 0; i < VECTOR_DIMENSIONS; i++)
-    {
-        distance += pow(get_real_components(v1,i) - get_real_components(v2,i), 2);
-    }
-    return distance;
+	float distance = 0;
+	distance += pow((float)v1.components.amount/10000.0f - (float)v2.components.amount/10000.0f, 2);
+	distance += pow((float)v1.components.installments/100.0f - (float)v2.components.installments/100.0f, 2);
+	distance += pow((float)v1.components.amount_vs_avg/10000.0f - (float)v2.components.amount_vs_avg/10000.0f, 2);
+	distance += pow((float)v1.components.hour_of_day/100.0f - (float)v2.components.hour_of_day/100.0f, 2);
+	distance += pow((float)v1.components.day_of_week/100.0f - (float)v2.components.day_of_week/100.0f, 2);
+	distance += pow((float)v1.components.minutes_since_last_tx/10000.0f - (float)v2.components.minutes_since_last_tx/10000.0f, 2); 
+	distance += pow((float)v1.components.km_from_last_tx/10000.0f - (float)v2.components.km_from_last_tx/10000.0f, 2);
+	distance += pow((float)v1.components.km_from_home/10000.0f - (float)v2.components.km_from_home/10000.0f, 2);
+	distance += pow((float)v1.components.tx_count_24h/100.0f - (float)v2.components.tx_count_24h/100.0f, 2);
+	distance += pow((float)v1.components.is_online - (float)v2.components.is_online, 2);
+	distance += pow((float)v1.components.card_present - (float)v2.components.card_present, 2);
+	distance += pow((float)v1.components.unknown_merchant - (float)v2.components.unknown_merchant, 2);
+	distance += pow((float)v1.components.merchant_avg_amount/10000.0f - (float)v2.components.merchant_avg_amount/10000.0f, 2);
+	distance += pow((float)v1.components.mcc_risk/100.0f - v2.components.mcc_risk/100.0f, 2);
+	return distance;
 }
 
 /*
@@ -243,29 +227,24 @@ uint16_t get_float(const char* &p){
 /*
  * @brief parses and returns the curr datetime element as uint8
  */
-uint8_t parse_datetime_element(const char* &p, char* req_at, int&i){
-	uint8_t aux = 0;
+uint16_t parse_datetime_element(const char* &p, char* req_at, int&i){
+	uint16_t aux = 0;
 	while(is_num(*p)){
-		aux = aux*10 + (uint8_t)(*p - '0');
+		aux = aux*10 + (uint16_t)(*p - '0');
 		req_at[i] = *p;
 		i+=1;
 		++p;
 	}req_at[i] = *p; i+=1; ++p;
 	return aux;
 }
+
 /*
  * @brief parses and divides the iso string into varibles 
  */
-
-void parse_iso(const char* &p, char* req_at, int& i, uint8_t& hour, uint8_t& minute, uint8_t& second){
-	while(*p && *p != 'T' && i < 20) { req_at[i] = *p; i+=1; ++p; }
-	
-	if (!*p || *p != 'T') {
-		req_at[i] = '\0';
-		return;
-	}
-	
-	req_at[i] = *p; i+=1; ++p;
+void parse_iso(const char* &p, char* req_at, int& i, uint16_t& year, uint8_t& month, uint8_t& day, uint8_t& hour, uint8_t& minute, uint8_t& second){
+	year = parse_datetime_element(p,req_at,i);
+	month = parse_datetime_element(p,req_at,i);
+	day = parse_datetime_element(p,req_at,i);
 	hour = parse_datetime_element(p,req_at,i);
 	minute = parse_datetime_element(p,req_at,i);
 	second = parse_datetime_element(p,req_at,i);
@@ -275,31 +254,46 @@ void parse_iso(const char* &p, char* req_at, int& i, uint8_t& hour, uint8_t& min
 
 /*
  * @brief Based on the parsed iso string, returns the respective day of week of the given date with the ctime library
+ *
+ * thanks to SrPatoS
  */
-uint8_t get_day_of_week(char* req_at){
-	const char* t_cur = req_at;
-	struct tm parsed = {};
-	strptime(t_cur,"%Y-%m-%dT%H:%M:%SZ",&parsed);
-	time_t t1 = timegm(&parsed);
-	struct tm* utc_time = gmtime(&t1);// limitation 1900+
-	uint8_t day = utc_time->tm_wday; // 0 sunday 6 saturday
-	if(day==0)day=6;
-	else day -= 1;
-	return day;
+uint8_t get_day_of_week(uint16_t year, uint8_t month, uint8_t day){
+	    if (month < 3) {
+		month += 12;
+		year--;
+	    }
+	    uint8_t century = year % 100;
+	    uint8_t decade = year / 100;
+	    uint8_t h = (day + (13 * (month + 1)) / 5 + century + century / 4 + decade / 4 + 5 * decade) % 7;
+	    return ((((h + 6) % 7)+6) % 7);
+}
+
+/*
+ * @breif returns the total num of days based on current datetime
+ *
+ * thanks to SrPatoS
+ */
+static long days_from_civil(int year, unsigned month, unsigned day){
+    year -= month <= 2;
+    const int era = (year >= 0 ? year : year - 399) / 400;
+    const unsigned yoe = (unsigned)(year - era * 400);
+    const unsigned doy = (153 * (month + (month > 2 ? -3 : 9)) + 2) / 5 + day - 1;
+    const unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return era * 146097L + (long)doe - 719468L;
 }
 
 /*
  * @brief returns the diference in time in double of two iso strings
+ *
+ * thanks to SrPatoS
  */
-double get_diff(char* req_at, char* last_req){
-	struct tm date1 = {};
-	struct tm date2 = {};
-	strptime(req_at,"%Y-%m-%dT%H:%M:%SZ",&date1);	
-	strptime(last_req,"%Y-%m-%dT%H:%M:%SZ",&date2);	
-	time_t t1 = timegm(&date1);
-	time_t t2 = timegm(&date2);
-	double diff = difftime(t2,t1); //second to minute /60
-	return diff;
+uint16_t get_diff(uint16_t y1,uint8_t mo1,uint8_t d1,uint8_t h1, uint8_t mi1,uint16_t y2,uint8_t mo2,uint8_t d2, uint8_t h2, uint8_t mi2){
+    long days1 = days_from_civil(y1, mo1, d1);
+    long days2 = days_from_civil(y2, mo2, d2);
+    long total1 = days1 * 1440L + h1 * 60L + mi1;
+    long total2 = days2 * 1440L + h2 * 60L + mi2;
+    long diff = total2 - total1;
+    return diff < 0 ? 0.0 : (uint16_t)diff;
 }
 
 /*
@@ -368,9 +362,7 @@ Vector parse_request(const char* &p){
 
 	next_val(p);
 
-	// error
-	
-	v.components.amount = get_float(p);
+	v.components.amount = get_uint16(p);
 
 	next_val(p);
 
@@ -379,13 +371,13 @@ Vector parse_request(const char* &p){
 	next_val(p);
 	++p;
 
-	char req_at[21]; int i = 0;
-	uint8_t hour,minute,second;
-	parse_iso(p,req_at,i,hour,minute,second);
+	char req_at[21]; int i = 0;uint16_t year;
+	uint8_t month,day,hour,minute,second;
+	parse_iso(p,req_at,i,year,month,day,hour,minute,second);
 	
 	v.components.hour_of_day = hour;
 
-	v.components.day_of_week = get_day_of_week(req_at); 
+	v.components.day_of_week = get_day_of_week(year,month,day); 
 	
 	++p;
         skip_to_brace(p);
@@ -425,7 +417,7 @@ Vector parse_request(const char* &p){
 
 	next_val(p);
 
-	v.components.merchant_avg_amount = get_float(p);
+	v.components.merchant_avg_amount = get_uint16(p);
 
         skip_to_brace(p);
 	++p;
@@ -455,9 +447,9 @@ Vector parse_request(const char* &p){
 		next_val(p);
 		if (*p) ++p; // Prevent stepping out of bounds if next_val hits \0
 		
-		char last_req[21]; int h =0;
-		uint8_t hourlt,minutelt,secondlt;
-		parse_iso(p,last_req,h,hourlt,minutelt,secondlt);
+		char last_req[21]; int h =0; uint16_t yearlt;
+		uint8_t monthlt,daylt,hourlt,minutelt,secondlt;
+		parse_iso(p,last_req,h,yearlt,monthlt,daylt,hourlt,minutelt,secondlt);
 
 		next_val(p);	
 		v.components.km_from_last_tx = get_km(p);

@@ -2,13 +2,13 @@
 
 Based on a pre defined space with data, when a new undefined data X is inserted, the KNN algorithm gets the K nearest neighbors of X and classifies it as the class with the most appearences on this limited space.
 
-Its a lazy algorithm, because it needs to pre-compute all the data previously to its calculation, so its nos scalable, as well as, if added new dimensions (parameters of classification) the data become sparse and its eficiency is doomed.
+Its a lazy algorithm, because it needs to pre-compute all the data previously to its calculation, so its not scalable, as well as, if added new dimensions (parameters of classification) the data become sparse and its eficiency is doomed.
 
 ps: how to chose the value of K: K = sqrt(n), where n is the total number of data points such that K is a odd number to avoid draws.
 
 ## The Problem with this algorithm:
 
-The searching process inside the space of instances T, specially with a high number D of dimensions of this space, makes so the simplicity of its implementation has some downsides in eficiency. 
+The searching process inside the space of instances $T$, specially with a high number $D$ of dimensions of this space, makes so the simplicity of its implementation has some downsides in eficiency. 
 
 To escape from this disavantage, two categories of searching were implemented:
 
@@ -25,7 +25,7 @@ The usual KNN implementation uses the euclidian distance formula, so that, for e
 
 ## k-Means algorithm:
 
-Groups $M$ fields by, randomly defining $k$ points in $T$, called centroids, while the $k$ points dont have a shared space, for each vector in $T$, it calculates the distance (Manhattam or Euclidian) to the nearest centroid (need to store the locality in space of each centroid) and define the vector as belonging to that group. For each $M$, calculates the arithmetic average of the data and define the result as the new centroid of that field (updates the centroid value).
+Groups $M$ fields by, randomly defining $K$ points in $T$, called centroids, while the $K$ points dont have a shared space, for each vector in $T$, it calculates the distance (Manhattam or Euclidian) to the nearest centroid (need to store the locality in space of each centroid) and define the vector as belonging to that group. For each $M$, calculates the arithmetic average of the data and define the result as the new centroid of that field (updates the centroid value).
 	- In each loop iteration (N times), its needed to calculate the distance of that point $n$ to each and every of the centroids (initially $k-centroids => O(NK)$);
 	- It is needed to store the $M$ centroids position vector in disk, such that it will be used on the next phase as well (stored in order => sort this group), with its respectifully number of elements.
 
