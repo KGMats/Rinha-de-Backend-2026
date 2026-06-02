@@ -16,19 +16,19 @@ using namespace std;
 struct VectorContent
 {
 	uint16_t amount;
-	uint8_t installments;
 	uint16_t amount_vs_avg;
-	uint8_t hour_of_day;
-	uint8_t day_of_week;
 	uint16_t minutes_since_last_tx;
 	uint16_t km_from_last_tx;
 	uint16_t km_from_home;
+	uint16_t merchant_avg_amount;
+	uint8_t installments;
+	uint8_t hour_of_day;
+	uint8_t day_of_week;
 	uint8_t tx_count_24h;
+	uint8_t mcc_risk;
 	bool is_online;
 	bool card_present;
 	bool unknown_merchant;
-	uint8_t mcc_risk;
-	uint16_t merchant_avg_amount;
 	//extra
 	bool last_transaction;
 };
@@ -84,5 +84,6 @@ Vector normalize_vector(Vector& v);
 Vector parse_request(const char* &p);
 vector<Vector> payload_parser(const char* json_dict);
 vector<Vector> references_parser(const char* json_dict);
+inline bool vector_is_equals(Vector v1, Vector v2);
 
 #endif /* VECTOR_H */

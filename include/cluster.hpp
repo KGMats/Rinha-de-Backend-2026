@@ -4,17 +4,20 @@
 #include "vector.hpp"
 #include <cstddef>
 #include <cmath>
+#include <cstdint>
 
 class Cluster
 {
 private:
-    constexpr static size_t size = SQRT_NVECTORS;
-    size_t cap;
-    size_t radius;
-    uint32_t vectorsIndexes[size];
+    constexpr static size_t cap = SQRT_NVECTORS;
+    size_t radius = 0;
 
 public:
+    Vector* vectorsIndexes[cap];
+    size_t size = 0;
     Vector centroid;
+    void add_vector(Vector *vector);
+    uint16_t euclidian_distance(Vector vector);
     Cluster();
     virtual ~Cluster();
 };
