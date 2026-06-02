@@ -35,7 +35,27 @@ struct VectorContent
 
 struct Vector
 {
-    VectorContent components;
+    VectorContent components;struct VectorContent
+{
+	uint16_t amount;
+	uint16_t amount_vs_avg;
+	uint16_t minutes_since_last_tx;
+	uint16_t km_from_last_tx;
+	uint16_t km_from_home;
+	uint16_t merchant_avg_amount;
+	uint8_t installments;
+	uint8_t hour_of_day;
+	uint8_t day_of_week;
+	uint8_t tx_count_24h;
+	uint8_t mcc_risk;
+	bool is_online;
+	bool card_present;
+	bool unknown_merchant;
+	//extra
+	bool last_transaction;
+};
+
+
     char  label;   // f = fraud, l = legit, n = none
 };
 
