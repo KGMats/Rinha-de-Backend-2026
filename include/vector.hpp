@@ -84,6 +84,6 @@ Vector parse_request(const char* &p);
 vector<Vector> payload_parser(const char* json_dict);
 vector<Vector> references_parser(const char* json_dict);
 
-inline bool vector_is_equals(Vector v1, Vector v2);
+bool vector_is_equals(Vector v1, Vector v2);
 
 #endif /* VECTOR_H */

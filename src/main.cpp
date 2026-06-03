@@ -1,5 +1,5 @@
-//#include "../include/network.hpp"
-#include "../include/vector.hpp"
+//#include "network.hpp"
+#include "vector.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>

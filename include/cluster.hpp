@@ -18,8 +18,6 @@ public:
     Vector centroid;
     void add_vector(Vector *vector);
     uint16_t euclidian_distance(Vector vector);
-    Cluster();
-    virtual ~Cluster();
 };
 
 #endif /* CLUSTER_H */

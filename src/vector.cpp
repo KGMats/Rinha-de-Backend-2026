@@ -1,4 +1,4 @@
-#include "../include/vector.hpp"
+#include "vector.hpp"
 #include <string>
 #include <vector>
 #include <cmath>
@@ -8,7 +8,7 @@ using namespace std;
 /*
  * @brief compares if two vector have all the fields values in commom
  */
-inline bool vector_is_equals(Vector v1, Vector v2)
+bool vector_is_equals(Vector v1, Vector v2)
 {
 	if (v1.components.amount != v2.components.amount)
 	{

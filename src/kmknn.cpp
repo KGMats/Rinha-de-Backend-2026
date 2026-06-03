@@ -1,5 +1,6 @@
-#include "../include/vector.hpp"
-#include "../include/cluster.hpp"
+#include "vector.hpp"
+#include "cluster.hpp"
+#include "kmknn.hpp"
 
 #include <cfloat>
 

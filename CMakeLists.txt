@@ -12,6 +12,8 @@ add_executable(Rinha2026
         src/kmknn.cpp
         src/vector.cpp
         src/network.cpp
+        src/kmeanspp.cpp
+        src/cluster.cpp
 )
 
 

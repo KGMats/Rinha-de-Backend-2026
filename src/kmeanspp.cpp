@@ -1,8 +1,8 @@
 #ifndef KMEANSPP_H
 #define KMEANSPP_H
 
-#include "../include/cluster.hpp"
-#include "../include/vector.hpp"
+#include "cluster.hpp"
+#include "vector.hpp"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
