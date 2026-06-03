@@ -7,7 +7,6 @@
 #include <unordered_map>
 
 #define VECTOR_DIMENSIONS 14
-
 #define NVECTORS 3000000
 #define SQRT_NVECTORS 1733
 
@@ -35,27 +34,7 @@ struct VectorContent
 
 struct Vector
 {
-    VectorContent components;struct VectorContent
-{
-	uint16_t amount;
-	uint16_t amount_vs_avg;
-	uint16_t minutes_since_last_tx;
-	uint16_t km_from_last_tx;
-	uint16_t km_from_home;
-	uint16_t merchant_avg_amount;
-	uint8_t installments;
-	uint8_t hour_of_day;
-	uint8_t day_of_week;
-	uint8_t tx_count_24h;
-	uint8_t mcc_risk;
-	bool is_online;
-	bool card_present;
-	bool unknown_merchant;
-	//extra
-	bool last_transaction;
-};
-
-
+    VectorContent components;
     char  label;   // f = fraud, l = legit, n = none
 };
 
@@ -104,6 +83,7 @@ Vector normalize_vector(Vector& v);
 Vector parse_request(const char* &p);
 vector<Vector> payload_parser(const char* json_dict);
 vector<Vector> references_parser(const char* json_dict);
+
 inline bool vector_is_equals(Vector v1, Vector v2);
 
 #endif /* VECTOR_H */

@@ -1,7 +1,7 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include "vector.hpp"
+#include "../include/vector.hpp"
 #include <cstddef>
 #include <cmath>
 #include <cstdint>

@@ -85,7 +85,69 @@ int main(int argc, char *argv[])
 	cout << "last_transaction: " << vv.components.last_transaction << endl;
 	cout << endl;
 
+	cout << simple_distance(v,vv) << endl;
+	cout << euclidian_distance(v,vv) << endl;
 
-    return 0;
+	cout << endl;
+	
+	char st[] = "2026-03-10T00:24:01Z";
+	uint16_t yy; uint8_t moo,dd,hh,mm,ss;
+	const char* pp = st; int ii = 0;
+	parse_iso(pp,st,ii,yy,moo,dd,hh,mm,ss);
+	cout << "year: " << yy << endl;
+	cout << "month: " << (int)moo << endl;
+	cout << "day: " << (int)dd << endl;
+	cout << "hour: " << (int)hh << endl;
+	cout << "minute: " << (int)mm << endl;
+	cout << "second: " << (int)ss << endl;
+	cout << "day of week: " << (int)get_day_of_week(yy,moo,dd) << endl;
+	cout << endl;
+
+	cout << endl;
+
+	char str[] = "2026-03-10T00:31:01Z";
+	uint16_t y; uint8_t mo,d,h,m,s;
+	const char* p = str; int i = 0;
+	parse_iso(p,str,i,y,mo,d,h,m,s);
+	cout << "year: " << y << endl;
+	cout << "month: " << (int)mo << endl;
+	cout << "day: " << (int)d << endl;
+	cout << "hour: " << (int)h << endl;
+	cout << "minute: " << (int)m << endl;
+	cout << "second: " << (int)s << endl;
+	cout << "day of week: " << (int)get_day_of_week(y,mo,d) << endl;
+	cout << endl;
+
+	cout << "diff in minutes: " << (int)get_diff(yy,moo,dd,hh,mm,y,mo,d,h,m) << endl;
+
+	char str1[] = "2026-03-13T15:31:01Z";
+	uint16_t y1; uint8_t mo1,d1,h1,m1,s1;
+	const char* p1 = str1; int i1 = 0;
+	parse_iso(p1,str1,i1,y1,mo1,d1,h1,m1,s1);
+	cout << "year: " << y1 << endl;
+	cout << "month: " << (int)mo1 << endl;
+	cout << "day: " << (int)d1 << endl;
+	cout << "hour: " << (int)h1 << endl;
+	cout << "minute: " << (int)m1 << endl;
+	cout << "second: " << (int)s1 << endl;
+	cout << endl;
+	cout << "day of week: " << (int)get_day_of_week(y1,mo1,d1) << endl;
+		      
+	char str2[] = "2026-03-13T14:50:01Z";
+	uint16_t y2; uint8_t mo2,d2,h2,m2,s2;
+	const char* p2 = str2; int i2 = 0;
+	parse_iso(p2,str2,i2,y2,mo2,d2,h2,m2,s2);
+	cout << "year: " << y2 << endl;
+	cout << "month: " << (int)mo2 << endl;
+	cout << "day: " << (int)d2 << endl;
+	cout << "hour: " << (int)h2 << endl;
+	cout << "minute: " << (int)m2 << endl;
+	cout << "second: " << (int)s2 << endl;
+	cout << "day of week: " << (int)get_day_of_week(y2,mo2,d2) << endl;
+	cout << endl;
+
+	cout << "diff in minutes: " << get_diff(y2,mo2,d2,h2,m2,y1,mo1,d1,h1,m1) << endl;
+
+	return 0;
 }
 

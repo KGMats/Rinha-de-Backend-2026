@@ -1,13 +1,69 @@
 #include "../include/vector.hpp"
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <cmath>
-#include <ctime>
-#include <map>
 
 using namespace std;
+
+/*
+ * @brief compares if two vector have all the fields values in commom
+ */
+inline bool vector_is_equals(Vector v1, Vector v2)
+{
+	if (v1.components.amount != v2.components.amount)
+	{
+		return false;
+	}
+	if (v1.components.installments != v2.components.installments)
+	{
+		return false;
+	}
+	if (v1.components.amount_vs_avg != v2.components.amount_vs_avg)
+	{
+		return false;
+	}
+	if (v1.components.hour_of_day != v2.components.hour_of_day)
+	{
+		return false;
+	}
+	if (v1.components.day_of_week != v2.components.day_of_week)
+	{
+		return false;
+	}
+	if (v1.components.km_from_last_tx != v2.components.km_from_last_tx)
+	{
+		return false;
+	}
+	if (v1.components.km_from_home != v2.components.km_from_home)
+	{
+		return false;
+	}
+	if (v1.components.tx_count_24h != v2.components.tx_count_24h)
+	{
+		return false;
+	}
+	if (v1.components.is_online != v2.components.is_online)
+	{
+		return false;
+	}
+	if (v1.components.card_present != v2.components.card_present)
+	{
+		return false;
+	}
+	if (v1.components.unknown_merchant != v2.components.unknown_merchant)
+	{
+		return false;
+	}
+	if (v1.components.mcc_risk != v2.components.mcc_risk)
+	{
+		return false;
+	}
+	if (v1.components.merchant_avg_amount != v2.components.merchant_avg_amount)
+	{
+		return false;
+	}
+	return true;
+}
 
 /*
  *@brief return the vector field associated to its numeric index 
@@ -559,62 +615,4 @@ vector<Vector> references_parser(const char* json_dict){
 		next_char = *p;
 	}
 	return data;
-}
-
-inline bool vector_is_equals(Vector v1, Vector v2)
-{
-	if (v1.components.amount != v2.components.amount)
-	{
-		return false;
-	}
-	if (v1.components.installments != v2.components.installments)
-	{
-		return false;
-	}
-	if (v1.components.amount_vs_avg != v2.components.amount_vs_avg)
-	{
-		return false;
-	}
-	if (v1.components.hour_of_day != v2.components.hour_of_day)
-	{
-		return false;
-	}
-	if (v1.components.day_of_week != v2.components.day_of_week)
-	{
-		return false;
-	}
-	if (v1.components.km_from_last_tx != v2.components.km_from_last_tx)
-	{
-		return false;
-	}
-	if (v1.components.km_from_home != v2.components.km_from_home)
-	{
-		return false;
-	}
-	if (v1.components.tx_count_24h != v2.components.tx_count_24h)
-	{
-		return false;
-	}
-	if (v1.components.is_online != v2.components.is_online)
-	{
-		return false;
-	}
-	if (v1.components.card_present != v2.components.card_present)
-	{
-		return false;
-	}
-	if (v1.components.unknown_merchant != v2.components.unknown_merchant)
-	{
-		return false;
-	}
-	if (v1.components.mcc_risk != v2.components.mcc_risk)
-	{
-		return false;
-	}
-	if (v1.components.merchant_avg_amount != v2.components.merchant_avg_amount)
-	{
-		return false;
-	}
-
-	return true;
 }
