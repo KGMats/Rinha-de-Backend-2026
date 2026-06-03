@@ -16,7 +16,7 @@ size_t KMKNN::binary_search(float* array, float target, uint8_t b, uint8_t e)
 {
     while (b <= e)
     {
-        uint8_t mid = b + (e - b);
+        uint8_t mid = b + (e - b) / 2;
         if (array[mid] == target)
             return mid;
         else if (array[mid] < target)
@@ -113,7 +113,6 @@ Vector** KMKNN::kmppknn(Vector v, uint8_t k, Cluster* clusters){
 			k_closest_vectors[kcvindex] = c1.vectorsIndexes[smallest_indexes[kcvindex]];
 			kcvindex++;
 		}
-        cout << "==================== FIM DA BUSCA ====================";
         for(int i = 0; i < 5; i++)
         {
             print_vector(*k_closest_vectors[i]);

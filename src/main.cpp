@@ -42,8 +42,6 @@ int main()
 
     Cluster* clusters = kmeanspp(100, data);
 
-    cout << "BUILD FINISHED" << endl;
-
     int server_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     char buffer[512];
 
