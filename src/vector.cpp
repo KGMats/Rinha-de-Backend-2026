@@ -533,144 +533,86 @@ vector<Vector> payload_parser(const char* json_dict){
 }
 
 /*
- *@brief switch to classify the vector field the numeric index refers to
- */
-void populate_v_index(Vector& v, uint16_t value, int index)
-{
-    switch (index){
-        case 0:
-            {
-                v.components.amount = value;
-                break;
-            }
-        case 1:
-            {
-                v.components.installments = value;
-                break;
-            }
-        case 2:
-            {
-                v.components.amount_vs_avg = value;
-                break;
-            }
-        case 3:
-            {
-                v.components.hour_of_day = value;
-                break;
-            }
-        case 4:
-            {
-                v.components.day_of_week = value;
-                break;
-            }
-        case 5:
-            {
-                v.components.minutes_since_last_tx = value;
-                break;
-            }
-        case 6:
-            {
-                v.components.km_from_last_tx = value;
-                break;
-            }
-        case 7:
-            {
-                v.components.km_from_home = value;
-                break;
-            }
-        case 8:
-            {
-                v.components.tx_count_24h = value;
-                break;
-            }
-        case 9:
-            {
-                v.components.is_online = value;
-                break;
-            }
-        case 10:
-            {
-                v.components.card_present = value;
-                break;
-            }
-        case 11:
-            {
-                v.components.unknown_merchant = value;
-                break;
-            }
-        case 12:
-            {
-                v.components.mcc_risk = value;
-                break;
-            }
-        case 13:
-            {
-                v.components.merchant_avg_amount = value;
-                break;
-            }
-        case 14:
-            {
-                v.components.last_transaction = value;
-                break;
-            }
-    }
-}
-
-/*
  * @brief parse a already normalized vector and get its values for test
  */
-Vector* references_parser(const char* json_dict){
-
+Vector* references_parser(const char* json_dict) {
     Vector* data = (Vector*) malloc(sizeof(Vector) * NVECTORS);
     const char* p = json_dict;
     size_t vector_idx = 0;
 
-    if(*p != '[')
+    if (*p != '[')
     {
         return data;
     }
 
-    char next_char = ',';
+    // Pointers to each field in declaration order, matching the JSON array layout.
+    // All stored as uint16_t* — narrow fields (uint8_t) are widened on write via the helper below.
+    // Index:  0       1              2             3            4             5                      6                 7             8              9           10             11                 12          13
+    //       amount installments amount_vs_avg hour_of_day day_of_week minutes_since_last_tx km_from_last_tx km_from_home tx_count_24h is_online card_present unknown_merchant mcc_risk merchant_avg_amount
 
-    while(next_char == ','){
-        Vector v;
+    char next_char = ',';
+    while (next_char == ',') {
+        Vector v = {};
 
         next_val(p);
-        if(*p != '[') return data;
+        if (*p != '[') return data;
 
-        int index = 0; bool last_transaction = true;
-        while(index != 14){
-            while(*p != ']'){
-                if(*p == '-')break;
-                if(is_num(*p))break;
+        bool last_transaction = true;
+        uint16_t fields[14] = {};
+
+        for (int index = 0; index < 14; index++) {
+            // Advance to next number (or '-' sentinel for null fields)
+            while (*p != ']') {
+                if (*p == '-' || is_num(*p)) break;
                 ++p;
             }
-            if(index == 5 || index == 6){
-                if(*p == '-') last_transaction = false;
-                ++p;
+
+            // Indices 5 and 6 are km/minutes which are -1 when there's no last tx
+            bool is_nullable = (index == 5 || index == 6);
+            if (is_nullable && *p == '-') {
+                last_transaction = false;
+                ++p; // skip '-'
             }
-            if(index == 1 || index == 3 || index == 4 || index == 8){
+
+            // Indices that need 2-digit truncation (were encoded as e.g. 0.8333 -> 83)
+            bool needs_trunc = (index == 1 || index == 3 || index == 4 || index == 8);
+            if (needs_trunc) {
                 uint16_t aux = get_float(p);
                 uint16_t tmp = aux; int size = 0;
-                while(tmp > 0){ tmp /= 10; size += 1; }
-                if(size > 2){
-                    uint8_t value = 0;
+                while (tmp > 0) { tmp /= 10; size++; }
+                if (size > 2) {
                     string digits = to_string(aux);
-                    for(int d=0; d<2; d++){ value = value*10 + (uint8_t)(digits[d] - '0'); }
-                    populate_v_index(v,value,index);
+                    uint8_t value = (digits[0] - '0') * 10 + (digits[1] - '0');
+                    fields[index] = value;
+                } else {
+                    fields[index] = aux;
                 }
-                else populate_v_index(v,aux,index);
+            } else {
+                fields[index] = get_float(p);
             }
-            else populate_v_index(v,get_float(p),index);
-            index += 1;
-        }populate_v_index(v,last_transaction,index);
+        }
+
+        v.components.amount                = fields[0];
+        v.components.installments          = (uint8_t)fields[1];
+        v.components.amount_vs_avg         = fields[2];
+        v.components.hour_of_day           = (uint8_t)fields[3];
+        v.components.day_of_week           = (uint8_t)fields[4];
+        v.components.minutes_since_last_tx = fields[5];
+        v.components.km_from_last_tx       = fields[6];
+        v.components.km_from_home          = fields[7];
+        v.components.tx_count_24h          = (uint8_t)fields[8];
+        v.components.is_online             = (bool)fields[9];
+        v.components.card_present          = (bool)fields[10];
+        v.components.unknown_merchant      = (bool)fields[11];
+        v.components.mcc_risk              = (uint8_t)fields[12];
+        v.components.merchant_avg_amount   = fields[13];
+        v.components.last_transaction      = last_transaction;
 
         next_val(p);
-        ++p;
-
+        ++p; // skip opening '"' of label value
         v.label = *p;
 
-        while(*p != '}')++p;
+        while (*p != '}') ++p;
         ++p;
 
         data[vector_idx++] = v;
