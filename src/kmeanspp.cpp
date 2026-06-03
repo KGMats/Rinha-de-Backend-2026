@@ -6,28 +6,31 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <ostream>
 #include <random>
+#include <iostream>
 
 Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
 {
     bool converged = false;
     auto *clusters = static_cast<Cluster *>(malloc(sizeof(Cluster) * k)); // Fixed allocation size
 
+
     while (!converged)
     {
         converged = true;
-        for (int i = 0; i < k; i++)
+        for (size_t i = 0; i < k; i++)
         {
             clusters[i].size = 0;
         }
 
-        for (int i = 0; i < NVECTORS; i++) // iterates through 3M Vec
+        for (size_t i = 0; i < NVECTORS; i++) // iterates through 3M Vec
         {
             Vector *vector = &vectors[i];
             size_t closest_index = 0;
             // euclidian_distance returns float. Using float prevents overflow on unnormalized data.
             float min_distance = euclidian_distance(*vector, *centroids[0]);
-            for (int j = 1; j < k; j++)
+            for (size_t j = 1; j < k; j++)
             {
                 float distance = euclidian_distance(*vector, *centroids[j]);
                 if (distance < min_distance)
@@ -40,10 +43,10 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
         }
         // Recalculando os centroids como a media dos clusters
 
-        for (int i = 0; i < k; i++)
+        for (size_t i = 0; i < k; i++)
         {
             if (clusters[i].size == 0) continue; // Evitando divisao por 0
-            Cluster cluster = clusters[i];
+            Cluster &cluster = clusters[i];
 
             Vector new_centroid = {};
             size_t cluster_size = cluster.size;
@@ -107,6 +110,7 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
             {
                 cluster.centroid = new_centroid;
                 converged = false;
+
             }
         }
     }
@@ -139,7 +143,7 @@ Cluster *kmeanspp(size_t k, Vector *vectors)
         for (int i = 0; i < NVECTORS; i++)
         {
             double min_distance = euclidian_distance(vectors[i], *centroids[0]);
-            for (int j = 1; j < n_centroids; j++)
+            for (size_t j = 1; j < n_centroids; j++)
             {
                 double distance = euclidian_distance(vectors[i], *centroids[j]);
                 if (distance < min_distance)

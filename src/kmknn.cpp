@@ -3,20 +3,32 @@
 #include "kmknn.hpp"
 
 #include <cfloat>
+#include <iostream>
 
 #define CALCULATE_DISTANCE euclidian_distance
 
 /*
  * @brief basic binary search with varible type definition on array
  */
-size_t KMKNN::binary_search(float* array,float target,uint8_t b,uint8_t e){
-	for(;;)
-	{
-		if(e == b)return e - 1;
-		uint8_t m = (b+e)/2;
-		if(array[m] < target)b = m + 1;
-		else e = m;
-	}
+
+
+size_t KMKNN::binary_search(float* array, float target, uint8_t b, uint8_t e)
+{
+    while (b <= e)
+    {
+        uint8_t mid = b + (e - b);
+        if (array[mid] == target)
+            return mid;
+        else if (array[mid] < target)
+        {
+            b = mid + 1;
+        }
+        else{
+            e = mid - 1;
+        }
+    }
+
+    return 0;
 }
 
 /*
@@ -101,6 +113,11 @@ Vector** KMKNN::kmppknn(Vector v, uint8_t k, Cluster* clusters){
 			k_closest_vectors[kcvindex] = c1.vectorsIndexes[smallest_indexes[kcvindex]];
 			kcvindex++;
 		}
+        cout << "==================== FIM DA BUSCA ====================";
+        for(int i = 0; i < 5; i++)
+        {
+            print_vector(*k_closest_vectors[i]);
+        }
 		return k_closest_vectors;
 	}
 }

@@ -9,6 +9,7 @@
 class Cluster
 {
 private:
+    // TODO: Fix buffer overflow
     constexpr static size_t cap = SQRT_NVECTORS;
     size_t radius = 0;
 

@@ -97,20 +97,37 @@ float simple_distance(Vector v1, Vector v2)
 float euclidian_distance(Vector v1, Vector v2)
 {
     float distance = 0;
-    distance += pow((float)v1.components.amount/10000.0f - (float)v2.components.amount/10000.0f, 2);
-    distance += pow((float)v1.components.installments/100.0f - (float)v2.components.installments/100.0f, 2);
-    distance += pow((float)v1.components.amount_vs_avg/10000.0f - (float)v2.components.amount_vs_avg/10000.0f, 2);
-    distance += pow((float)v1.components.hour_of_day/100.0f - (float)v2.components.hour_of_day/100.0f, 2);
-    distance += pow((float)v1.components.day_of_week/100.0f - (float)v2.components.day_of_week/100.0f, 2);
-    distance += pow((float)v1.components.minutes_since_last_tx/10000.0f - (float)v2.components.minutes_since_last_tx/10000.0f, 2);
-    distance += pow((float)v1.components.km_from_last_tx/10000.0f - (float)v2.components.km_from_last_tx/10000.0f, 2);
-    distance += pow((float)v1.components.km_from_home/10000.0f - (float)v2.components.km_from_home/10000.0f, 2);
-    distance += pow((float)v1.components.tx_count_24h/100.0f - (float)v2.components.tx_count_24h/100.0f, 2);
-    distance += pow((float)v1.components.is_online - (float)v2.components.is_online, 2);
-    distance += pow((float)v1.components.card_present - (float)v2.components.card_present, 2);
-    distance += pow((float)v1.components.unknown_merchant - (float)v2.components.unknown_merchant, 2);
-    distance += pow((float)v1.components.merchant_avg_amount/10000.0f - (float)v2.components.merchant_avg_amount/10000.0f, 2);
-    distance += pow((float)v1.components.mcc_risk/100.0f - v2.components.mcc_risk/100.0f, 2);
+    float delta;
+
+    delta = (float)(v1.components.amount - v2.components.amount)/100000;
+    distance += delta * delta;
+    delta = (float)(v1.components.installments - v2.components.installments)/100;
+    distance += delta * delta;
+    delta = (float)(v1.components.amount_vs_avg - v2.components.amount_vs_avg)/100000;
+    distance += delta * delta;
+    delta = (float)(v1.components.hour_of_day - v2.components.hour_of_day)/100;
+    distance += delta * delta;
+    delta = (float)(v1.components.day_of_week - v2.components.day_of_week)/100;
+    distance += delta * delta;
+    delta = (float)(v1.components.minutes_since_last_tx - v2.components.minutes_since_last_tx)/100000;
+    distance += delta * delta;
+    delta = (float)(v1.components.km_from_last_tx - v2.components.km_from_last_tx)/100000;
+    distance += delta * delta;
+    delta = (float)(v1.components.km_from_home - v2.components.km_from_home)/100000;
+    distance += delta * delta;
+    delta = (float)(v1.components.tx_count_24h - v2.components.tx_count_24h)/100;
+    distance += delta * delta;
+    delta = (float)(v1.components.is_online - v2.components.is_online);
+    distance += delta * delta;
+    delta = (float)(v1.components.card_present - v2.components.card_present);
+    distance += delta * delta;
+    delta = (float)(v1.components.unknown_merchant - v2.components.unknown_merchant);
+    distance += delta * delta;
+    delta = (float)(v1.components.merchant_avg_amount - v2.components.merchant_avg_amount)/100000;
+    distance += delta * delta;
+    delta = (float)(v1.components.mcc_risk - v2.components.mcc_risk)/100;
+    distance += delta * delta;
+
     return distance;
 }
 
