@@ -53,7 +53,6 @@ const unordered_map<string, int> normalization_dict = {
     {"max_merchant_avg_amount", 10000}
 };
 
-uint16_t get_components(Vector& v, int index);
 
 float simple_distance(Vector v1, Vector v2);
 float euclidian_distance(Vector v1, Vector v2);
@@ -82,8 +81,10 @@ uint8_t mcc_risk(uint16_t mcc_code);
 Vector normalize_vector(Vector& v);
 Vector parse_request(const char* &p);
 vector<Vector> payload_parser(const char* json_dict);
-vector<Vector> references_parser(const char* json_dict);
+Vector* references_parser(const char* json_dict);
 
 bool vector_is_equals(Vector v1, Vector v2);
+
+void print_vector(Vector v);
 
 #endif /* VECTOR_H */
