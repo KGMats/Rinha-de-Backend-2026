@@ -4,6 +4,7 @@
 #include "cluster.hpp"
 #include "vector.hpp"
 #include <algorithm>
+#include <cfloat>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -16,10 +17,22 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
     bool converged = false;
     auto *clusters = static_cast<Cluster *>(malloc(sizeof(Cluster) * k)); // Fixed allocation size
 
+    std::vector<uint8_t> centroid_changed(k, 1);
+    uint32_t owner[NVECTORS];
+    float vector_dist[NVECTORS];   // u(x): distancia atual do vetor ao seu centroide
+    float centroid_delta[k];       // quanto cada centroide se moveu na ultima iteracao
 
+    std::fill(owner, owner + NVECTORS, UINT32_MAX);
+    std::fill(vector_dist, vector_dist + NVECTORS, 0.0f);
+    std::fill(centroid_delta, centroid_delta + k, FLT_MAX);
+
+    size_t iterations = 0;
     while (!converged)
     {
+        iterations++;
+        cout << "ITERATIONS: " << iterations << endl;
         converged = true;
+
         for (size_t i = 0; i < k; i++)
         {
             clusters[i].size = 0;
@@ -27,9 +40,16 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
 
         for (size_t i = 0; i < NVECTORS; i++) // iterates through 3M Vec
         {
+            // Se a distancia atual do vetor ao seu centroide
+            // e menor que metade do quanto o centroide se moveu, ele não pode ter trocado de dono
+            if (owner[i] != UINT32_MAX && vector_dist[i] * 2.0f <= centroid_delta[owner[i]])
+            {
+                clusters[owner[i]].add_vector(i);
+                continue;
+            }
+
             Vector *vector = &vectors[i];
             size_t closest_index = 0;
-            // euclidian_distance returns float. Using float prevents overflow on unnormalized data.
             float min_distance = euclidian_distance(*vector, *centroids[0]);
             for (size_t j = 1; j < k; j++)
             {
@@ -40,10 +60,17 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
                     closest_index = j;
                 }
             }
+
+            if (owner[i] != closest_index)
+            {
+                owner[i] = closest_index;
+            }
+
+            vector_dist[i] = min_distance;
             clusters[closest_index].add_vector(i);
         }
-        // Recalculando os centroids como a media dos clusters
 
+        // Recalculando os centroids como a media dos clusters
         for (size_t i = 0; i < k; i++)
         {
             if (clusters[i].size == 0) continue; // Evitando divisao por 0
@@ -109,10 +136,15 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
 
             if (!vector_is_equals(new_centroid, cluster.centroid))
             {
+                centroid_delta[i] = euclidian_distance(cluster.centroid, new_centroid);
                 cluster.centroid = new_centroid;
+                *centroids[i] = new_centroid;
                 converged = false;
-
+                centroid_changed[i] = 1;
+                continue;
             }
+            centroid_delta[i] = 0.0f;
+            centroid_changed[i] = 0;
         }
     }
 
@@ -123,7 +155,7 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
         Cluster &cluster = clusters[i];
 
         uint32_t size = cluster.size;
-        uint32_t max_distance = 0; // Used to calculate the cluster radius
+        float max_distance = 0.0f;
 
         for (uint32_t j = 0; j < size; j++)
         {
