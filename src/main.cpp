@@ -20,12 +20,9 @@
 #define CLUSTERS_INDEX_FILE "clusters_index.bin"
 #define NNEIGHBORS 5
 
-Cluster* clusters;
-bool built = false;
-
 int main()
 {
-    ifstream file("../docs/miniref.json");
+    ifstream file("../docs/references.json");
     if (!file)
     {
         cerr << "Failled to open references file, Aborting.";
@@ -38,7 +35,13 @@ int main()
 
     Vector* data = references_parser(json_dict);
 
-    clusters = (Cluster*)malloc(sizeof(Cluster) * SQRT_NVECTORS);
+    Cluster* clusters = (Cluster*)malloc(sizeof(Cluster) * SQRT_NVECTORS);
+
+    if (!clusters)
+    {
+        cerr << "Failled to allocate memory to store vectors. Aborting.";
+        exit(1);
+    }
 
     ifstream bin_file(CLUSTERS_INDEX_FILE, ios::binary);
     if (bin_file)
@@ -46,7 +49,6 @@ int main()
         cout << "Loading clusters from " << CLUSTERS_INDEX_FILE << "..." << endl;
         bin_file.read((char*)clusters, sizeof(Cluster) * SQRT_NVECTORS);
         bin_file.close();
-        built = true;
     }
     else
     {
@@ -62,7 +64,6 @@ int main()
             out_file.close();
             cout << "Clusters saved to " << CLUSTERS_INDEX_FILE << endl;
         }
-        built = true;
     }
 
     for (int i = 0; i < SQRT_NVECTORS; i++)
@@ -73,7 +74,7 @@ int main()
     cout << endl;
 
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    char buffer[512];
+    char buffer[BUFFERSIZE];
 
     if (server_fd < 0)
     {
@@ -125,7 +126,7 @@ int main()
 
 
         // ========== process request ========== //
-        size_t msg_size = read(client_fd, buffer, 512);
+        size_t msg_size = read(client_fd, buffer, BUFFERSIZE);
 
         buffer[msg_size] = '\0'; // End string
 
@@ -140,8 +141,6 @@ int main()
         if (buffer[0] == 'G')
         {
             // TODO: Return 200 only after processing KMNN
-
-
             write(client_fd, responses[6], response_sizes[6]);
             close(client_fd);
             continue;
@@ -151,13 +150,15 @@ int main()
         Vector data_vec = parse_request(ptr);
         // ENDPOINT /fraud-score
 
-        Vector **neighbors = KMKNN::kmppknn(data_vec, NNEIGHBORS, clusters, data);
+        Vector **neighbors = KMPPKNN::kmppknn(data_vec, NNEIGHBORS, clusters, data);
 
         int counter = 0;
         for (int i = 0; i < NNEIGHBORS; i++)
         {
             counter += neighbors[i]->label == 'f';
         }
+        delete[] neighbors;
+
 
 
         write(client_fd, responses[counter], response_sizes[counter]);

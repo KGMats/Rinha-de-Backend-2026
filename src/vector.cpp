@@ -491,7 +491,7 @@ Vector parse_request(const char* &p){
 
     next_val(p);
 
-    if(*p == 'n'){
+    if(*p == 'n'){ p += 4;
         v.components.last_transaction = false;
         v.components.minutes_since_last_tx = v.components.km_from_last_tx = -1;
     } else {

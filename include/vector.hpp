@@ -9,6 +9,8 @@
 #define VECTOR_DIMENSIONS 14
 #define NVECTORS 3000000
 #define SQRT_NVECTORS 1733
+// #define NVECTORS 10000
+// #define SQRT_NVECTORS 250
 
 using namespace std;
 
@@ -75,7 +77,7 @@ void get_mcc(const char* &p, char* aux, int& i);
 bool get_bool(const char* &p);
 uint16_t get_km(const char* &p);
 
-unordered_map<string,bool> known_merchants(const char* &p);
+extern const unordered_map<string,int> normalization_dict;
 uint8_t mcc_risk(uint16_t mcc_code);
 
 Vector normalize_vector(Vector& v);

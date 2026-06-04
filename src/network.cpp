@@ -13,7 +13,7 @@
 void serve()
 {
     int server_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
-    char buffer[512];
+    char buffer[BUFFERSIZE];
 
     if (server_fd < 0)
     {
@@ -65,7 +65,7 @@ void serve()
 
 
         // ========== process request ========== //
-        size_t msg_size = read(client_fd, buffer, 512);
+        size_t msg_size = read(client_fd, buffer, BUFFERSIZE);
 
         buffer[msg_size] = '\0'; // End string
 

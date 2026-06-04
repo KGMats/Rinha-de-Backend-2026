@@ -6,14 +6,16 @@
 
 #include <cstdint>
 
-class KMKNN
+class KMPPKNN
 {
 public:
-    static size_t binary_search(float* array,float target,uint8_t b,uint8_t e);
+    static size_t binary_search(float* array, float target, size_t b, size_t e);
     static void order_smallest(size_t* indexes,size_t index,float* array, float target);
     static Vector **kmppknn(Vector v, uint8_t k, Cluster* clusters, Vector* vectors);
 
-protected:
+    static void order_smallest(size_t* clusters,size_t cluster_idx,size_t* indexes,size_t index,float* array, float target, size_t b, size_t e);
+
+    static float kmknn(Vector v, uint8_t k, Cluster* clusters, float distances_to_centroids[], size_t index_of_distances[], float smallest_distances[], size_t smallest_indexes[],size_t clusters_indexes[], Vector *vectors);
 };
 
 #endif /* KMKNN_H */
