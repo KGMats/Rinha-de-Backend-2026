@@ -3,6 +3,7 @@
 
 #include "cluster.hpp"
 #include "vector.hpp"
+#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -39,7 +40,7 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
                     closest_index = j;
                 }
             }
-            clusters[closest_index].add_vector(vector);
+            clusters[closest_index].add_vector(i);
         }
         // Recalculando os centroids como a media dos clusters
 
@@ -70,7 +71,7 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
 
             for (size_t j = 0; j < cluster.size; j++)
             {
-                Vector vector = *cluster.vectorsIndexes[j];
+                Vector vector = vectors[cluster.vectorsIndexes[j]];
 
                 sum_amount += vector.components.amount;
                 sum_amount_vs_avg += vector.components.amount_vs_avg;
@@ -114,6 +115,32 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
             }
         }
     }
+
+
+    // Initializing the cluster size and the distances vector
+    for (uint32_t i = 0; i < k; i++)
+    {
+        Cluster &cluster = clusters[i];
+
+        uint32_t size = cluster.size;
+        uint32_t max_distance = 0; // Used to calculate the cluster radius
+
+        for (uint32_t j = 0; j < size; j++)
+        {
+            float distance = euclidian_distance(cluster.centroid, vectors[cluster.vectorsIndexes[j]]);
+            cluster.vector_distances[j] = distance;
+            if (distance > max_distance)
+            {
+                max_distance = distance;
+            }
+        }
+
+        cluster.radius = max_distance;
+
+    }
+
+
+
     return clusters;
 }
 

@@ -2,10 +2,10 @@
 #include "vector.hpp"
 #include <cstdint>
 
-void Cluster::add_vector(Vector* vector)
+void Cluster::add_vector(uint32_t index)
 {
     // TODO: Add bounds check
-    vectorsIndexes[size++] = vector;
+    vectorsIndexes[size++] = index;
 }
 
 

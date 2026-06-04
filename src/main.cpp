@@ -38,11 +38,41 @@ int main()
 
     Vector* data = references_parser(json_dict);
 
+    clusters = (Cluster*)malloc(sizeof(Cluster) * SQRT_NVECTORS);
 
+    ifstream bin_file(CLUSTERS_INDEX_FILE, ios::binary);
+    if (bin_file)
+    {
+        cout << "Loading clusters from " << CLUSTERS_INDEX_FILE << "..." << endl;
+        bin_file.read((char*)clusters, sizeof(Cluster) * SQRT_NVECTORS);
+        bin_file.close();
+        built = true;
+    }
+    else
+    {
+        cout << "Calculating clusters (this may take a while)..." << endl;
+        Cluster* calculated_clusters = kmeanspp(SQRT_NVECTORS, data);
+        memcpy(clusters, calculated_clusters, sizeof(Cluster) * SQRT_NVECTORS);
+        free(calculated_clusters);
 
-    Cluster* clusters = kmeanspp(100, data);
+        ofstream out_file(CLUSTERS_INDEX_FILE, ios::binary);
+        if (out_file)
+        {
+            out_file.write((char*)clusters, sizeof(Cluster) * SQRT_NVECTORS);
+            out_file.close();
+            cout << "Clusters saved to " << CLUSTERS_INDEX_FILE << endl;
+        }
+        built = true;
+    }
 
-    int server_fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    for (int i = 0; i < SQRT_NVECTORS; i++)
+    {
+        if (clusters[i].size > 0)
+            cout << clusters[i].size << ',';
+    }
+    cout << endl;
+
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     char buffer[512];
 
     if (server_fd < 0)
@@ -118,10 +148,10 @@ int main()
         }
 
         const char *ptr = buffer;
-        Vector data = parse_request(ptr);
+        Vector data_vec = parse_request(ptr);
         // ENDPOINT /fraud-score
 
-        Vector **neighbors = KMKNN::kmppknn(data, NNEIGHBORS, clusters);
+        Vector **neighbors = KMKNN::kmppknn(data_vec, NNEIGHBORS, clusters, data);
 
         int counter = 0;
         for (int i = 0; i < NNEIGHBORS; i++)
@@ -130,7 +160,7 @@ int main()
         }
 
 
-        write(client_fd, responses[counter], response_sizes[1]);
+        write(client_fd, responses[counter], response_sizes[counter]);
         close(client_fd);
     }
 

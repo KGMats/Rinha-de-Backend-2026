@@ -56,7 +56,7 @@ void KMKNN::order_smallest(size_t* indexes,size_t index,float* array, float targ
 /*
  * @brief kmknn algorithm, look at README.md for details
  */
-Vector** KMKNN::kmppknn(Vector v, uint8_t k, Cluster* clusters){
+Vector** KMKNN::kmppknn(Vector v, uint8_t k, Cluster* clusters, Vector* vectors){
 	Vector** k_closest_vectors = new Vector*[k];
 	uint8_t kcvindex = 0;
 
@@ -75,24 +75,24 @@ Vector** KMKNN::kmppknn(Vector v, uint8_t k, Cluster* clusters){
 	       	}
 	}
 	
-	Cluster c1 = clusters[index]; // get the closest one
+	Cluster& c1 = clusters[index]; // get the closest one
 	size_t smallest_indexes[k] = {};
 	float smallest_distances[k] = {FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX};
 	float biggest_small_distance = FLT_MAX; // edge case get the smallest in first iteration
 	uint8_t jump = 0; // at least 1, max 5
 
 	do{
-		float cur_distance=CALCULATE_DISTANCE(*c1.vectorsIndexes[jump], v);
+		float cur_distance=CALCULATE_DISTANCE(vectors[c1.vectorsIndexes[jump]], v);
 		order_smallest(smallest_indexes,jump,smallest_distances,cur_distance);
 		biggest_small_distance = smallest_distances[4];
 		jump++;
-	}while(jump < 5 && c1.vectorsIndexes[jump]);
+	}while(jump < 5 && jump < c1.size);
 
 	// if jump == even (par) can draw!
 	if(jump < 5){
 		while(jump != 0)
 		{
-			k_closest_vectors[kcvindex] = c1.vectorsIndexes[smallest_indexes[kcvindex]];
+			k_closest_vectors[kcvindex] = &vectors[c1.vectorsIndexes[smallest_indexes[kcvindex]]];
 			kcvindex++; jump--;
 		}
 		return k_closest_vectors;
@@ -101,7 +101,7 @@ Vector** KMKNN::kmppknn(Vector v, uint8_t k, Cluster* clusters){
 	{
 		for(size_t j = jump; j < c1.size; j++)
 		{
-			float cur_distance = CALCULATE_DISTANCE(*c1.vectorsIndexes[j], v);
+			float cur_distance = CALCULATE_DISTANCE(vectors[c1.vectorsIndexes[j]], v);
 			if(cur_distance < biggest_small_distance)
 			{
 				order_smallest(smallest_indexes,j,smallest_distances,cur_distance);
@@ -110,13 +110,9 @@ Vector** KMKNN::kmppknn(Vector v, uint8_t k, Cluster* clusters){
 		}
 		for(uint8_t h = 0; h < 5; h++)
 		{
-			k_closest_vectors[kcvindex] = c1.vectorsIndexes[smallest_indexes[kcvindex]];
+			k_closest_vectors[kcvindex] = &vectors[c1.vectorsIndexes[smallest_indexes[kcvindex]]];
 			kcvindex++;
 		}
-        for(int i = 0; i < 5; i++)
-        {
-            print_vector(*k_closest_vectors[i]);
-        }
 		return k_closest_vectors;
 	}
 }
