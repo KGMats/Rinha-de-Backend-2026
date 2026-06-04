@@ -9,7 +9,7 @@ endif()
 
 add_executable(Rinha2026
         src/main.cpp
-        src/kmknn.cpp
+        src/kmppknn.cpp
         src/vector.cpp
         src/network.cpp
         src/kmeanspp.cpp
