@@ -9,9 +9,11 @@ endif()
 
 add_executable(Rinha2026
         src/main.cpp
-        src/kmknn.cpp
+        src/kmppknn.cpp
         src/vector.cpp
         src/network.cpp
+        src/kmeanspp.cpp
+        src/cluster.cpp
 )
 
 
@@ -20,5 +22,11 @@ target_include_directories(Rinha2026
         ${CMAKE_SOURCE_DIR}/include
 )
 
+SET(COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
+
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    SET(COMPILE_OPTIONS ${COMPILE_OPTIONS} -march=native)
+endif()
+
 # Habilitando warnings adicionais
-target_compile_options(Rinha2026 PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(Rinha2026 PRIVATE ${COMPILE_OPTIONS})

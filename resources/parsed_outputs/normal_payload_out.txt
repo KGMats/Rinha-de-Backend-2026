@@ -1,0 +1,612 @@
+
+amount: 4112
+installments: 2
+amount_vs_avg: 50
+hour_of_day: 18
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 65535
+km_from_home: 2923
+tx_count_24h: 3
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 15
+merchant_avg_amount: 6025
+label: n
+last_transaction: 0
+
+
+amount: 38488
+installments: 3
+amount_vs_avg: 336
+hour_of_day: 20
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 4
+km_from_home: 1370
+tx_count_24h: 3
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 2
+merchant_avg_amount: 29895
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 9
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 20
+km_from_home: 0
+tx_count_24h: 148
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 41787
+installments: 7
+amount_vs_avg: 211
+hour_of_day: 4
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 22
+km_from_home: 8980
+tx_count_24h: 13
+is_online: 1
+card_present: 0
+unknown_merchant: 1
+mcc_risk: 85
+merchant_avg_amount: 8501
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 4
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 22
+km_from_home: 0
+tx_count_24h: 38
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 4425
+installments: 3
+amount_vs_avg: 500
+hour_of_day: 13
+day_of_week: 5
+minutes_since_last_tx: 65535
+km_from_last_tx: 53
+km_from_home: 4802
+tx_count_24h: 2
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 15
+merchant_avg_amount: 30539
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 13
+day_of_week: 6
+minutes_since_last_tx: 65535
+km_from_last_tx: 29
+km_from_home: 0
+tx_count_24h: 14
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 33093
+installments: 10
+amount_vs_avg: 407
+hour_of_day: 5
+day_of_week: 5
+minutes_since_last_tx: 65535
+km_from_last_tx: 65535
+km_from_home: 9522
+tx_count_24h: 20
+is_online: 0
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 75
+merchant_avg_amount: 5486
+label: n
+last_transaction: 0
+
+
+amount: 26285
+installments: 3
+amount_vs_avg: 500
+hour_of_day: 18
+day_of_week: 6
+minutes_since_last_tx: 65535
+km_from_last_tx: 40
+km_from_home: 2681
+tx_count_24h: 1
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 3
+merchant_avg_amount: 7774
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 9
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 9
+km_from_home: 0
+tx_count_24h: 7
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 9784
+installments: 1
+amount_vs_avg: 50
+hour_of_day: 19
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 65535
+km_from_home: 2892
+tx_count_24h: 5
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 15
+merchant_avg_amount: 18317
+label: n
+last_transaction: 0
+
+
+amount: 33334
+installments: 1
+amount_vs_avg: 2944
+hour_of_day: 15
+day_of_week: 4
+minutes_since_last_tx: 65535
+km_from_last_tx: 58
+km_from_home: 3869
+tx_count_24h: 4
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 3
+merchant_avg_amount: 48414
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 15
+day_of_week: 6
+minutes_since_last_tx: 65535
+km_from_last_tx: 32
+km_from_home: 3051
+tx_count_24h: 0
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 40491
+installments: 3
+amount_vs_avg: 262
+hour_of_day: 9
+day_of_week: 6
+minutes_since_last_tx: 65535
+km_from_last_tx: 27
+km_from_home: 2603
+tx_count_24h: 3
+is_online: 1
+card_present: 0
+unknown_merchant: 0
+mcc_risk: 25
+merchant_avg_amount: 40941
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 9
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 9
+km_from_home: 0
+tx_count_24h: 14
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 55870
+installments: 11
+amount_vs_avg: 418
+hour_of_day: 6
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 43
+km_from_home: 5471
+tx_count_24h: 19
+is_online: 1
+card_present: 0
+unknown_merchant: 1
+mcc_risk: 75
+merchant_avg_amount: 7623
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 6
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 9
+km_from_home: 1472
+tx_count_24h: 0
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 22919
+installments: 2
+amount_vs_avg: 50
+hour_of_day: 14
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 17
+km_from_home: 6371
+tx_count_24h: 1
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 3
+merchant_avg_amount: 18367
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 14
+day_of_week: 6
+minutes_since_last_tx: 65535
+km_from_last_tx: 10
+km_from_home: 0
+tx_count_24h: 30
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 39687
+installments: 9
+amount_vs_avg: 135
+hour_of_day: 5
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 26
+km_from_home: 5030
+tx_count_24h: 11
+is_online: 1
+card_present: 0
+unknown_merchant: 1
+mcc_risk: 85
+merchant_avg_amount: 8874
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 5
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 42
+km_from_home: 0
+tx_count_24h: 6
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 4507
+installments: 6
+amount_vs_avg: 22
+hour_of_day: 4
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 12
+km_from_home: 6942
+tx_count_24h: 13
+is_online: 0
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 85
+merchant_avg_amount: 9562
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 4
+day_of_week: 5
+minutes_since_last_tx: 65535
+km_from_last_tx: 47
+km_from_home: 0
+tx_count_24h: 12
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 4
+day_of_week: 6
+minutes_since_last_tx: 65535
+km_from_last_tx: 48
+km_from_home: 0
+tx_count_24h: 18
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 4
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 46
+km_from_home: 2909
+tx_count_24h: 0
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 55726
+installments: 10
+amount_vs_avg: 546
+hour_of_day: 0
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 54
+km_from_home: 9645
+tx_count_24h: 15
+is_online: 1
+card_present: 0
+unknown_merchant: 1
+mcc_risk: 85
+merchant_avg_amount: 2677
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 0
+day_of_week: 0
+minutes_since_last_tx: 65535
+km_from_last_tx: 11
+km_from_home: 0
+tx_count_24h: 154
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 0
+day_of_week: 5
+minutes_since_last_tx: 65535
+km_from_last_tx: 9
+km_from_home: 0
+tx_count_24h: 14
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 24207
+installments: 3
+amount_vs_avg: 50
+hour_of_day: 20
+day_of_week: 3
+minutes_since_last_tx: 65535
+km_from_last_tx: 30
+km_from_home: 1391
+tx_count_24h: 2
+is_online: 0
+card_present: 0
+unknown_merchant: 0
+mcc_risk: 3
+merchant_avg_amount: 42671
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 20
+day_of_week: 0
+minutes_since_last_tx: 65535
+km_from_last_tx: 19
+km_from_home: 0
+tx_count_24h: 17
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 4856
+installments: 1
+amount_vs_avg: 50
+hour_of_day: 13
+day_of_week: 4
+minutes_since_last_tx: 65535
+km_from_last_tx: 13
+km_from_home: 2602
+tx_count_24h: 2
+is_online: 1
+card_present: 0
+unknown_merchant: 0
+mcc_risk: 3
+merchant_avg_amount: 6752
+label: n
+last_transaction: 1
+
+
+amount: 0
+installments: 0
+amount_vs_avg: 0
+hour_of_day: 13
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 50
+km_from_home: 0
+tx_count_24h: 65
+is_online: 1
+card_present: 1
+unknown_merchant: 1
+mcc_risk: 5
+merchant_avg_amount: 0
+label: n
+last_transaction: 1
+
+
+amount: 23686
+installments: 1
+amount_vs_avg: 50
+hour_of_day: 11
+day_of_week: 1
+minutes_since_last_tx: 65535
+km_from_last_tx: 65535
+km_from_home: 4471
+tx_count_24h: 4
+is_online: 0
+card_present: 1
+unknown_merchant: 0
+mcc_risk: 15
+merchant_avg_amount: 10101
+label: n
+last_transaction: 0
+
+
+amount: 5268
+installments: 7
+amount_vs_avg: 37
+hour_of_day: 5
+day_of_week: 2
+minutes_since_last_tx: 65535
+km_from_last_tx: 0
+km_from_home: 3944
+tx_count_24h: 15
+is_online: 1
+card_present: 0
+unknown_merchant: 1
+mcc_risk: 75
+merchant_avg_amount: 9189
+label: n
+last_transaction: 1
+
