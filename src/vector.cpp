@@ -74,20 +74,20 @@ bool vector_is_equals(Vector v1, Vector v2)
 float simple_distance(Vector v1, Vector v2)
 {
     float distance = 0;
-    distance += abs((float)v1.components.amount/10000.0f - (float)v2.components.amount/10000.0f);
-    distance += abs((float)v1.components.installments/100.0f - (float)v2.components.installments/100.0f);
-    distance += abs((float)v1.components.amount_vs_avg/10000.0f - (float)v2.components.amount_vs_avg/10000.0f);
-    distance += abs((float)v1.components.hour_of_day/100.0f - (float)v2.components.hour_of_day/100.0f);
-    distance += abs((float)v1.components.day_of_week/100.0f - (float)v2.components.day_of_week/100.0f);
-    distance += abs((float)v1.components.minutes_since_last_tx/10000.0f - (float)v2.components.minutes_since_last_tx/10000.0f);
-    distance += abs((float)v1.components.km_from_last_tx/10000.0f - (float)v2.components.km_from_last_tx/10000.0f);
-    distance += abs((float)v1.components.km_from_home/10000.0f - (float)v2.components.km_from_home/10000.0f);
-    distance += abs((float)v1.components.tx_count_24h/100.0f - (float)v2.components.tx_count_24h/100.0f);
-    distance += abs((float)v1.components.is_online - (float)v2.components.is_online);
-    distance += abs((float)v1.components.card_present - (float)v2.components.card_present);
-    distance += abs((float)v1.components.unknown_merchant - (float)v2.components.unknown_merchant);
-    distance += abs((float)v1.components.merchant_avg_amount/10000.0f - (float)v2.components.merchant_avg_amount/10000.0f);
-    distance += abs((float)v1.components.mcc_risk/100.0f - v2.components.mcc_risk/100.0f);
+    distance += (float)abs(v1.components.amount - v2.components.amount) /10000.0f;
+    distance += (float) abs(v1.components.installments - v2.components.installments)/100.0f;
+    distance += (float) abs(v1.components.amount_vs_avg - v2.components.amount_vs_avg)/10000.0f;
+    distance += (float) abs(v1.components.hour_of_day - v2.components.hour_of_day)/100.0f;
+    distance += (float) abs(v1.components.day_of_week - v2.components.day_of_week)/100.0f;
+    distance += (float) abs(v1.components.minutes_since_last_tx - v2.components.minutes_since_last_tx)/10000.0f;
+    distance += (float) abs(v1.components.km_from_last_tx - v2.components.km_from_last_tx)/10000.0f;
+    distance += (float) abs(v1.components.km_from_home - v2.components.km_from_home)/10000.0f;
+    distance += (float) abs(v1.components.tx_count_24h - v2.components.tx_count_24h) /100.0f;
+    distance += v1.components.is_online - v2.components.is_online;
+    distance += v1.components.card_present - v2.components.card_present;
+    distance += v1.components.unknown_merchant - v2.components.unknown_merchant;
+    distance += (float) abs(v1.components.merchant_avg_amount - v2.components.merchant_avg_amount)/10000.0f;
+    distance += (float) abs(v1.components.mcc_risk - v2.components.mcc_risk)/100.0f;
     return distance;
 }
 

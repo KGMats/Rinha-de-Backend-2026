@@ -5,7 +5,7 @@
 #include <cfloat>
 #include <iostream>
 
-#define CALCULATE_DISTANCE euclidian_distance
+#define CALCULATE_DISTANCE simple_distance
 
 /*
  * @brief binary search that returns the position where a target float should be inserted to maintain the array sorted in growing order 
