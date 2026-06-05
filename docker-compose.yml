@@ -1,0 +1,35 @@
+services:
+  worker1:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      STORAGE_METHOD: ${STORAGE_METHOD}
+    networks:
+      - network_rinha
+    volumes:
+      - volume_rinha:/app/docs
+
+  loadbalancer:
+    image: haproxytech/haproxy-alpine:2.4
+    depends_on:
+      - worker1
+      # - worker2
+    networks:
+      - network_rinha
+
+    ports:
+      - "8000:80"
+      - "8404:8404"
+
+    volumes:
+      - ./docker/HAProxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+
+
+volumes:
+  volume_rinha:
+
+networks:
+  network_rinha:
+    driver: bridge
+
