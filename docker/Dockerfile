@@ -38,8 +38,6 @@ WORKDIR /app
 
 COPY --from=build /app/build/Rinha2026 /app/
 
-RUN mkdir /app/docs
-COPY --from=build /app/references.json /app/
 COPY ./build/clusters_index_v2.bin /app
 COPY ./build/vectors.bin /app
 
