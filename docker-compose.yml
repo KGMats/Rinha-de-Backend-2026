@@ -39,8 +39,7 @@ services:
       - network_rinha
 
     ports:
-      - "8000:80"
-      - "8404:8404"
+      - "9999:80"
 
     volumes:
       - ./docker/HAProxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
@@ -57,4 +56,3 @@ volumes:
 networks:
   network_rinha:
     driver: bridge
-
