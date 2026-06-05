@@ -12,7 +12,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.4500"
+          cpus: "0.35"
           memory: "162.5MB"
   worker2:
     build:
@@ -27,7 +27,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.4500"
+          cpus: "0.35"
           memory: "162.5MB"
 
   loadbalancer:
@@ -47,7 +47,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.1000"
+          cpus: "0.3"
           memory: "25MB"
 
 volumes:
