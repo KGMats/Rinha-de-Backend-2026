@@ -1,0 +1,7 @@
+{
+    "participants": ["Kayky Gibran", "Matheus Yanetti"],
+    "social": ["https://www.linkedin.com/in/kgmats/", "https://www.linkedin.com/in/matheus-yanetti/"],
+    "source-code-repo": "https://github.com/KGMats/Rinha-de-Backend-2026",
+    "stack": ["c++", "HAProxy"],
+    "open_to_work": true
+}
