@@ -18,16 +18,29 @@
 
 
 #define CLUSTERS_INDEX_FILE "clusters_index_v2.bin"
+#define VECTORS_BIN_FILE "vectors.bin"
+#define REFERENCES_FILE "./references.json"
+
 #define NNEIGHBORS 5
 
 int main()
 {
-#ifdef IS_DEBUG
-    return 0;
-#endif
-    Vector* data;
+    Vector* vectors = (Vector*) malloc(sizeof(Vector) * NVECTORS);
+
+
+
+    ifstream vectors_bin_file(VECTORS_BIN_FILE, ios::binary);
+    if (vectors_bin_file)
     {
-        ifstream file("../docs/references.json");
+        cout << "Loading vectors from " << VECTORS_BIN_FILE << "..." << endl;
+        vectors_bin_file.read((char*)vectors, sizeof(Vector) * NVECTORS);
+        vectors_bin_file.close();
+    }
+    else
+    {
+        cout << "Parsing vectors from " << REFERENCES_FILE << endl;
+
+        ifstream file(REFERENCES_FILE);
         if (!file)
         {
             cerr << "Failled to open references file, Aborting.";
@@ -37,31 +50,39 @@ int main()
         string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
         const char* json_dict = content.c_str();
 
+        vectors = references_parser(json_dict);
 
-        data = references_parser(json_dict);
+        ofstream out_file(VECTORS_BIN_FILE, ios::binary);
+        if (out_file)
+        {
+            out_file.write((char*)vectors, sizeof(Vector) * NVECTORS);
+            out_file.close();
+            cout << "Vectors saved to " << VECTORS_BIN_FILE << endl;
+        }
     }
 
-    Cluster* clusters = (Cluster*)malloc(sizeof(Cluster) * SQRT_NVECTORS);
 
-    if (!clusters)
-    {
-        cerr << "Failled to allocate memory to store vectors. Aborting.";
-        exit(1);
-    }
 
-    ifstream bin_file(CLUSTERS_INDEX_FILE, ios::binary);
-    if (bin_file)
+    Cluster* clusters;
+
+    ifstream clusters_bin_file(CLUSTERS_INDEX_FILE, ios::binary);
+    if (clusters_bin_file)
     {
+        clusters = (Cluster*)malloc(sizeof(Cluster) * SQRT_NVECTORS);
+        if (!clusters)
+        {
+            cerr << "Failled to allocate memory to store vectors. Aborting.";
+            exit(1);
+        }
+
         cout << "Loading clusters from " << CLUSTERS_INDEX_FILE << "..." << endl;
-        bin_file.read((char*)clusters, sizeof(Cluster) * SQRT_NVECTORS);
-        bin_file.close();
+        clusters_bin_file.read((char*)clusters, sizeof(Cluster) * SQRT_NVECTORS);
+        clusters_bin_file.close();
     }
     else
     {
         cout << "Calculating clusters (this may take a while)..." << endl;
-        Cluster* calculated_clusters = kmeanspp(SQRT_NVECTORS, data);
-        memcpy(clusters, calculated_clusters, sizeof(Cluster) * SQRT_NVECTORS);
-        free(calculated_clusters);
+        clusters = kmeanspp(SQRT_NVECTORS, vectors);
 
         ofstream out_file(CLUSTERS_INDEX_FILE, ios::binary);
         if (out_file)
@@ -150,7 +171,7 @@ int main()
         Vector data_vec = parse_request(ptr);
         // ENDPOINT /fraud-score
 
-        Vector **neighbors = KMPPKNN::kmppknn(data_vec, NNEIGHBORS, clusters, data);
+        Vector **neighbors = KMPPKNN::kmppknn(data_vec, NNEIGHBORS, clusters, vectors);
 
         int counter = 0;
         for (int i = 0; i < NNEIGHBORS; i++)
@@ -169,4 +190,3 @@ int main()
 
     return 0;
 }
-
