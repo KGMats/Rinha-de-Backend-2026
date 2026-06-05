@@ -1,10 +1,6 @@
 services:
   worker1:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    environment:
-      STORAGE_METHOD: ${STORAGE_METHOD}
+    image: kgmats/rinha2026:latest
     networks:
       - network_rinha
     volumes:
@@ -15,11 +11,7 @@ services:
           cpus: "0.3855"
           memory: "162.5MB"
   worker2:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    environment:
-      STORAGE_METHOD: ${STORAGE_METHOD}
+    image: kgmats/rinha2026:latest
     networks:
       - network_rinha
     volumes:
