@@ -15,11 +15,9 @@ private:
 public:
     float radius = 0;
     uint32_t vectorsIndexes[cap];
-    float vector_distances[cap];
     size_t size = 0;
     Vector centroid;
     void add_vector(uint32_t index);
     uint16_t euclidian_distance(Vector vector);
 };
-
 #endif /* CLUSTER_H */

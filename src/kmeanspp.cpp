@@ -152,8 +152,11 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
         }
     }
 
+    free(owner);
+    free(vector_dist);
+    free(centroid_delta);
 
-    // Initializing the cluster size and the distances vector
+    // Initializing the cluster radius
     for (uint32_t i = 0; i < k; i++)
     {
         Cluster &cluster = clusters[i];
@@ -164,7 +167,6 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
         for (uint32_t j = 0; j < size; j++)
         {
             float distance = euclidian_distance(cluster.centroid, vectors[cluster.vectorsIndexes[j]]);
-            cluster.vector_distances[j] = distance;
             if (distance > max_distance)
             {
                 max_distance = distance;
@@ -172,10 +174,7 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
         }
 
         cluster.radius = max_distance;
-
     }
-
-
 
     return clusters;
 }

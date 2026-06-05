@@ -17,7 +17,7 @@
 #include <cstdio>
 
 
-#define CLUSTERS_INDEX_FILE "jorrar_denovo.bin"
+#define CLUSTERS_INDEX_FILE "clusters_index_v2.bin"
 #define NNEIGHBORS 5
 
 int main()
@@ -25,18 +25,21 @@ int main()
 #ifdef IS_DEBUG
     return 0;
 #endif
-    ifstream file("../docs/references.json");
-    if (!file)
+    Vector* data;
     {
-        cerr << "Failled to open references file, Aborting.";
-        exit(1);
+        ifstream file("../docs/references.json");
+        if (!file)
+        {
+            cerr << "Failled to open references file, Aborting.";
+            exit(1);
+        }
+
+        string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+        const char* json_dict = content.c_str();
+
+
+        data = references_parser(json_dict);
     }
-
-    string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    const char* json_dict = content.c_str();
-
-
-    Vector* data = references_parser(json_dict);
 
     Cluster* clusters = (Cluster*)malloc(sizeof(Cluster) * SQRT_NVECTORS);
 
