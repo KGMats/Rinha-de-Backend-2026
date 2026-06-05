@@ -27,7 +27,7 @@ COPY CMakeLists.txt ./CMakeLists.txt
 RUN ls .
 RUN cat CMakeLists.txt
 
-RUN mkdir build && cmake . -B build 
+RUN mkdir build && cmake . -B build -DCMAKE_BUILD_TYPE=Release
 RUN cd build && make
 
 # Runtime
@@ -39,6 +39,8 @@ WORKDIR /app
 COPY --from=build /app/build/Rinha2026 /app/
 
 RUN mkdir /app/docs
-COPY --from=build /app/references.json /app/docs/
+COPY --from=build /app/references.json /app/
+COPY ./build/clusters_index_v2.bin /app
+COPY ./build/vectors.bin /app
 
 CMD ["/app/Rinha2026"]
