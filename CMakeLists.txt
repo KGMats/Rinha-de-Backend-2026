@@ -7,6 +7,9 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+
+
+
 add_executable(Rinha2026
         src/main.cpp
         src/kmppknn.cpp
@@ -21,6 +24,11 @@ target_include_directories(Rinha2026
         PUBLIC
         ${CMAKE_SOURCE_DIR}/include
 )
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message("MORRA")
+    target_compile_definitions(Rinha2026 PUBLIC IS_DEBUG=1)
+endif()
 
 SET(COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
 

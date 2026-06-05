@@ -3,7 +3,7 @@
 
 
 #define LISTENING_PORT 9999
-#define BUFFERSIZE 1024
+#define BUFFERSIZE 576
 #define CONNECTION_QUEUE_SIZE 10
 
 void serve();

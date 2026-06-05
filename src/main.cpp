@@ -17,11 +17,14 @@
 #include <cstdio>
 
 
-#define CLUSTERS_INDEX_FILE "clusters_index.bin"
+#define CLUSTERS_INDEX_FILE "jorrar_denovo.bin"
 #define NNEIGHBORS 5
 
 int main()
 {
+#ifdef IS_DEBUG
+    return 0;
+#endif
     ifstream file("../docs/references.json");
     if (!file)
     {
@@ -66,12 +69,7 @@ int main()
         }
     }
 
-    for (int i = 0; i < SQRT_NVECTORS; i++)
-    {
-        if (clusters[i].size > 0)
-            cout << clusters[i].size << ',';
-    }
-    cout << endl;
+
 
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     char buffer[BUFFERSIZE];
@@ -140,7 +138,6 @@ int main()
         // ENDPOINT /ready
         if (buffer[0] == 'G')
         {
-            // TODO: Return 200 only after processing KMNN
             write(client_fd, responses[6], response_sizes[6]);
             close(client_fd);
             continue;
