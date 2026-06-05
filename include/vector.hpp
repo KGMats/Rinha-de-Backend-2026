@@ -9,9 +9,13 @@
 #define VECTOR_DIMENSIONS 14
 #define NVECTORS 3000000
 #define SQRT_NVECTORS 1733
-// #define NVECTORS 10000
-// #define SQRT_NVECTORS 250
+//#define NVECTORS 500000
+//#define SQRT_NVECTORS 708
+//#define NVECTORS 10000
+//#define SQRT_NVECTORS 100
 
+//#define NVECTORS 62500
+//#define SQRT_NVECTORS 250
 using namespace std;
 
 struct VectorContent

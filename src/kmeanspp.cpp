@@ -4,6 +4,7 @@
 #include "cluster.hpp"
 #include "vector.hpp"
 #include <algorithm>
+#include <cfloat>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -16,10 +17,26 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
     bool converged = false;
     auto *clusters = static_cast<Cluster *>(malloc(sizeof(Cluster) * k)); // Fixed allocation size
 
+    std::vector<uint8_t> centroid_changed(k, 1);
+    auto *owner         = static_cast<uint32_t *>(malloc(NVECTORS * sizeof(uint32_t)));
 
+    // u(x): distancia atual do vetor ao seu centroide
+    auto *vector_dist   = static_cast<float *>(malloc(NVECTORS * sizeof(float)));
+
+    // quanto cada centroide se moveu na ultima iteracao
+    auto *centroid_delta = static_cast<float *>(malloc(k * sizeof(float)));
+
+    std::fill(owner, owner + NVECTORS, UINT32_MAX);
+    std::fill(vector_dist, vector_dist + NVECTORS, 0.0f);
+    std::fill(centroid_delta, centroid_delta + k, FLT_MAX);
+
+    size_t iterations = 0;
     while (!converged)
     {
+        iterations++;
+        cout << "ITERATIONS: " << iterations << endl;
         converged = true;
+
         for (size_t i = 0; i < k; i++)
         {
             clusters[i].size = 0;
@@ -27,9 +44,16 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
 
         for (size_t i = 0; i < NVECTORS; i++) // iterates through 3M Vec
         {
+            // Se a distancia atual do vetor ao seu centroide
+            // e menor que metade do quanto o centroide se moveu, ele não pode ter trocado de dono
+            if (owner[i] != UINT32_MAX && vector_dist[i] * 2.0f <= centroid_delta[owner[i]])
+            {
+                clusters[owner[i]].add_vector(i);
+                continue;
+            }
+
             Vector *vector = &vectors[i];
             size_t closest_index = 0;
-            // euclidian_distance returns float. Using float prevents overflow on unnormalized data.
             float min_distance = euclidian_distance(*vector, *centroids[0]);
             for (size_t j = 1; j < k; j++)
             {
@@ -40,10 +64,17 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
                     closest_index = j;
                 }
             }
+
+            if (owner[i] != closest_index)
+            {
+                owner[i] = closest_index;
+            }
+
+            vector_dist[i] = min_distance;
             clusters[closest_index].add_vector(i);
         }
-        // Recalculando os centroids como a media dos clusters
 
+        // Recalculando os centroids como a media dos clusters
         for (size_t i = 0; i < k; i++)
         {
             if (clusters[i].size == 0) continue; // Evitando divisao por 0
@@ -109,26 +140,33 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
 
             if (!vector_is_equals(new_centroid, cluster.centroid))
             {
+                centroid_delta[i] = euclidian_distance(cluster.centroid, new_centroid);
                 cluster.centroid = new_centroid;
+                *centroids[i] = new_centroid;
                 converged = false;
-
+                centroid_changed[i] = 1;
+                continue;
             }
+            centroid_delta[i] = 0.0f;
+            centroid_changed[i] = 0;
         }
     }
 
+    free(owner);
+    free(vector_dist);
+    free(centroid_delta);
 
-    // Initializing the cluster size and the distances vector
+    // Initializing the cluster radius
     for (uint32_t i = 0; i < k; i++)
     {
         Cluster &cluster = clusters[i];
 
         uint32_t size = cluster.size;
-        uint32_t max_distance = 0; // Used to calculate the cluster radius
+        float max_distance = 0.0f;
 
         for (uint32_t j = 0; j < size; j++)
         {
             float distance = euclidian_distance(cluster.centroid, vectors[cluster.vectorsIndexes[j]]);
-            cluster.vector_distances[j] = distance;
             if (distance > max_distance)
             {
                 max_distance = distance;
@@ -136,65 +174,61 @@ Cluster *kmeans(uint32_t k, Vector *vectors, Vector **centroids)
         }
 
         cluster.radius = max_distance;
-
     }
-
-
 
     return clusters;
 }
+
 
 Cluster *kmeanspp(size_t k, Vector *vectors)
 {
     // Aparentemente rand() nao eh aleatorio de fato e eh limitado a 2^31 - 1. Usar lib <random> corrige isso
     std::random_device rd;
     std::mt19937_64 gen(rd());
-
     // Inicialmente selecionamos um vetor aleatorio
     size_t n_centroids = 0;
-
     auto **centroids = static_cast<Vector **>(calloc(k, sizeof(Vector *)));
-
     std::uniform_int_distribution<size_t> dist_index(0, NVECTORS - 1);
     size_t first_index = dist_index(gen);
-
     centroids[n_centroids] = &vectors[first_index];
     n_centroids += 1;
 
     // Selecionando o restante dos pontos
-    // Changed to double to hold large unnormalized euclidian distances without overflow
-    auto *distance_squared = static_cast<double *>(calloc(NVECTORS, sizeof(double)));
+    // Changed to double to hold large unnormalized squared euclidian distances without overflow
+    auto *min_dist = static_cast<double *>(calloc(NVECTORS, sizeof(double)));
+
+    // Inicializa min_dist com a distância ao primeiro centroide
+    for (size_t i = 0; i < NVECTORS; i++)
+    {
+        min_dist[i] = euclidian_distance(vectors[i], *centroids[0]);
+    }
 
     while (n_centroids < k)
     {
-        for (int i = 0; i < NVECTORS; i++)
+        // Otimização: ao invés de recalcular contra todos os centroids existentes (O(n*k^2)),
+        // mantemos min_dist[] persistente e apenas atualizamos com o centroide recém adicionado (O(n*k))
+        Vector *last_centroid = centroids[n_centroids - 1];
+        for (size_t i = 0; i < NVECTORS; i++)
         {
-            double min_distance = euclidian_distance(vectors[i], *centroids[0]);
-            for (size_t j = 1; j < n_centroids; j++)
+            double distance = euclidian_distance(vectors[i], *last_centroid);
+            if (distance < min_dist[i])
             {
-                double distance = euclidian_distance(vectors[i], *centroids[j]);
-                if (distance < min_distance)
-                {
-                    min_distance = distance;
-                }
+                min_dist[i] = distance;
             }
-            distance_squared[i] = min_distance;
         }
 
-        // Escolhendo o proximo centroide com probabilidade proporcional a D(x) ^2
+        // Escolhendo o proximo centroide com probabilidade proporcional a D(x)^2
         double total = 0.0;
-        for (int i = 0; i < NVECTORS; i++)
+        for (size_t i = 0; i < NVECTORS; i++)
         {
-            total += distance_squared[i];
+            total += min_dist[i];
         }
-
         std::uniform_real_distribution<double> dist_prob(0.0, total);
         double threadshold = dist_prob(gen);
         double cumulative = 0.0;
-
-        for (int i = 0; i < NVECTORS; i++)
+        for (size_t i = 0; i < NVECTORS; i++)
         {
-            cumulative += distance_squared[i];
+            cumulative += min_dist[i];
             if (cumulative >= threadshold)
             {
                 centroids[n_centroids] = &vectors[i];
@@ -204,13 +238,10 @@ Cluster *kmeanspp(size_t k, Vector *vectors)
         }
     }
 
-    free(distance_squared);
-
+    free(min_dist);
     // KMEANS AQUI
     Cluster *clusters = kmeans(k, vectors, centroids);
-
     free(centroids);
     return clusters;
 }
-
 #endif /* KMEANSPP_H */

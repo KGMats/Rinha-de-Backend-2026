@@ -17,23 +17,29 @@
 #include <cstdio>
 
 
-#define CLUSTERS_INDEX_FILE "clusters_index.bin"
+#define CLUSTERS_INDEX_FILE "clusters_index_v2.bin"
 #define NNEIGHBORS 5
 
 int main()
 {
-    ifstream file("../docs/references.json");
-    if (!file)
+#ifdef IS_DEBUG
+    return 0;
+#endif
+    Vector* data;
     {
-        cerr << "Failled to open references file, Aborting.";
-        exit(1);
+        ifstream file("../docs/references.json");
+        if (!file)
+        {
+            cerr << "Failled to open references file, Aborting.";
+            exit(1);
+        }
+
+        string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+        const char* json_dict = content.c_str();
+
+
+        data = references_parser(json_dict);
     }
-
-    string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    const char* json_dict = content.c_str();
-
-
-    Vector* data = references_parser(json_dict);
 
     Cluster* clusters = (Cluster*)malloc(sizeof(Cluster) * SQRT_NVECTORS);
 
@@ -66,12 +72,7 @@ int main()
         }
     }
 
-    for (int i = 0; i < SQRT_NVECTORS; i++)
-    {
-        if (clusters[i].size > 0)
-            cout << clusters[i].size << ',';
-    }
-    cout << endl;
+
 
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     char buffer[BUFFERSIZE];
@@ -140,7 +141,6 @@ int main()
         // ENDPOINT /ready
         if (buffer[0] == 'G')
         {
-            // TODO: Return 200 only after processing KMNN
             write(client_fd, responses[6], response_sizes[6]);
             close(client_fd);
             continue;
