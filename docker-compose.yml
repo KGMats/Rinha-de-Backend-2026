@@ -8,7 +8,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.3855"
+          cpus: "0.45"
           memory: "162.5MB"
   worker2:
     image: kgmats/rinha2026:latest
@@ -19,7 +19,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.3855"
+          cpus: "0.45"
           memory: "162.5MB"
 
   loadbalancer:
@@ -39,7 +39,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.229"
+          cpus: "0.1"
           memory: "25MB"
 
 volumes:
