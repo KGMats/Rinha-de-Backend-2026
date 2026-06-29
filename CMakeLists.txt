@@ -26,15 +26,14 @@ target_include_directories(Rinha2026
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message("MORRA")
     target_compile_definitions(Rinha2026 PUBLIC IS_DEBUG=1)
 endif()
 
+# Habilitando warnings adicionais
 SET(COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     SET(COMPILE_OPTIONS ${COMPILE_OPTIONS} -march=native)
 endif()
 
-# Habilitando warnings adicionais
 target_compile_options(Rinha2026 PRIVATE ${COMPILE_OPTIONS})
